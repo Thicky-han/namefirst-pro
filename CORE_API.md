@@ -1,6 +1,6 @@
-# L1 核心接口
+# 核心与 Bing 集成接口
 
-适用版本：`0.1.0-stage1`。与搜索页 DOM 无关；Bing/百度桥接和后台消息接入属于 L2/L3。
+适用版本：`0.2.0-stage2`。核心与 DOM 无关；L2 已接入 Bing，百度属于 L3。以下核心接口延续 L1。
 
 ## 调用入口
 
@@ -63,7 +63,7 @@ const result = await runner.run({
 2. 需要补充时，通过 Wikidata 的 `wbsearchentities` 与 `wbgetentities` 查找精确名称/别名和 P856 网址。请求英语、中文及 `mul` 通用标签，排除弃用或带结束时间的旧入口。
 3. 明确搜索 Apache 产品，或已发现 Apache 子域候选时，读取 Apache 基金会的在线项目数据，按名称匹配当次记录。目录未随包内置，也不会常驻成一个实体白名单。
 
-Wikidata 是社区维护线索，不是身份认证来源。没有结果页候选、公开来源也未收录时，当前核心不能凭空找到任意网站。广泛补充搜索在 L2 结合实际 Bing 结果后完善。
+Wikidata 是社区维护线索，不是身份认证来源。没有结果页候选、公开来源也未收录时，当前核心不能凭空找到任意网站。L2 已读取本次 Bing 普通结果，补充发现仍限上述公开来源，没有新增后台搜索服务或全网爬虫。
 
 ## 当前认证政策
 
@@ -94,4 +94,27 @@ HTML 最多 256 KiB，结构化 JSON 最多 2 MiB，个别 API 请求采用更�
 
 浏览器 Fetch 在某些跨站跳转只提供 `opaqueredirect`，无法检查下一跳；此时明确返回 `redirect-uninspectable`。Node 环境可以检查公开 Location，但不能因此假定浏览器也能。普通扩展的地址语法检查仍不能完整防范 DNS 重绑定。
 
-L1 通过 CLI 和临时扩展测试页调用核心，普通弹窗仍保留阶段 0 联网实验；后台与搜索页生产消息接入尚未实施。不能将调试页的权限测试配置用于正式分发。
+独立核心仍可通过 CLI 和临时扩展测试页调用；产品后台已通过下面的受限桥接向 Bing 提供任务。不能将调试页的权限测试配置用于正式分发。
+
+## L2 Bing 消息桥接
+
+`extension/search/` 分为 `bing-adapter`（读当前页面）、`content`（生命周期）、`protocol`（消息过滤）、`service`（后台任务）、`card`（文本渲染）和 `settings`（版本化开关）。网络仍只在后台的核心 transport 中发生。
+
+内容脚本使用端口 `namefirst-pro:bing:v1`。后台验证扩展 ID、顶部 frame、活动文档和支持的 Bing URL，再从 `chrome.tabs.get` 的当前地址取得查询；`sender.url` 在 `pushState` 后可能仍是初始地址，不能作为当前查询。当前地址必须与发送者同源；STATE 携带浏览器查询，前端再次核对本页 URL。运行前和发布结果前再次检查查询/任务所有权。
+
+| 方向 | 消息 | 边界 |
+| --- | --- | --- |
+| 后台 → 页面 | `STATE { query, state }` | 状态来自可信设置和真实网站权限；查询来自浏览器 |
+| 页面 → 后台 | `RESOLVE { requestId, candidates }` | requestId 为 8—80 位字母数字/连字符；最多 12 个候选，拒绝其他顶层字段 |
+| 后台 → 页面 | `PROGRESS { requestId, taskId, stage }` | 仅当前任务更新进度 |
+| 后台 → 页面 | `RESULT { requestId, result }` | 只含有限候选/相关证据摘要，去除原 HTML、页面链接清单和请求轨迹 |
+| 页面 → 后台 | `CANCEL` / `OPEN_SETTINGS` / `PAUSE_BING` | 取消或固定设置操作，不能选择读取地址 |
+| 后台 → 页面 | `INVALIDATED` / `ERROR` / `ACTION_DONE` | 设置/权限变化先中止旧任务，再由页面重新读取状态 |
+
+候选标题必须与当前实体相关；URL 再次经过公开 HTTPS 检查、去重并剔除 Bing 跳转目标，丢弃 `official`、分数和证据字段。Bing 包装链接的展开只是候选提示，绝不构成认证。内容脚本不接收网页 postMessage 或执行页面代码。
+
+同标签页最多一个活动端口，跨标签页最多 3 个正在运行的任务；每标签页每分钟 30 次，同查询重试至少间隔 1 秒。连接断开、查询变化、页面关闭、设置或权限变化均取消，旧完成/旧 disconnect 不能覆盖新任务。
+
+单次 `GET_SEARCH_STATE` 仅向合格 Bing frame 返回状态。`GET_STATE`、`SET_SETTINGS` 和阶段 0 的 `PROBE_PAGE` 只向确切受信 `popup.html` 开放；不能从 Bing 调用诊断作为任意地址代理。
+
+本地只保存 `{ version: 1, enabled: boolean, bingEnabled: boolean }`，键为 `namefirstProSettings`；异常结构关闭功能。无查询历史、证据缓存或学习标签。页面结果区重建时重挂已有卡片，不重新发出网络请求；资料查询不显示卡片，不确定查询先进行本次确认。

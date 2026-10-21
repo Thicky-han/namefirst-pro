@@ -41,8 +41,8 @@ const manifest = JSON.parse(readFileSync(path.join(root, 'extension/manifest.jso
 assert.equal(manifest.manifest_version, 3);
 assert.deepEqual(manifest.permissions, ['storage']);
 assert.deepEqual(manifest.optional_host_permissions, ['https://*/*']);
-assert.equal(manifest.host_permissions, undefined);
-assert.equal(manifest.content_scripts, undefined); // Search adapters begin at stage 2.
+assert.deepEqual(manifest.host_permissions, ['https://www.bing.com/*', 'https://cn.bing.com/*', 'https://bing.com/*']);
+assert.deepEqual(manifest.content_scripts, [{ matches: ['https://www.bing.com/search*', 'https://cn.bing.com/search*', 'https://bing.com/search*'], js: ['bing-content.js'], run_at: 'document_idle', all_frames: false }]);
 assert.equal(manifest.externally_connectable, undefined);
 const identity = JSON.parse(readFileSync(path.join(root, 'config/identity.json'), 'utf8'));
 const digest = createHash('sha256').update(Buffer.from(identity.manifestKey, 'base64')).digest('hex').slice(0, 32);
