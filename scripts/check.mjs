@@ -19,6 +19,15 @@ const files = filesAt(root);
 let scripts = 0;
 for (const name of files) {
   const relative = path.relative(root, name);
+  if (name.endsWith('.png')) {
+    const bytes = readFileSync(name);
+    assert.equal(bytes.subarray(0, 8).toString('hex'), '89504e470d0a1a0a', `${relative}: PNG signature`);
+    assert.equal(bytes.readUInt32BE(16), bytes.readUInt32BE(20), `${relative}: square artwork required`);
+    let offset = 8;
+    while (offset < bytes.length) { const size = bytes.readUInt32BE(offset); const kind = bytes.subarray(offset + 4, offset + 8).toString('ascii'); assert(['IHDR', 'IDAT', 'IEND', 'sRGB'].includes(kind), `${relative}: unexpected PNG metadata ${kind}`); offset += size + 12; }
+    assert.equal(offset, bytes.length, `${relative}: PNG chunk bounds`);
+    continue;
+  }
   const text = readFileSync(name, 'utf8');
   assert(!/[A-Za-z]:[\\/]Users[\\/]|[A-Za-z]:[\\/]Github/u.test(text), `${relative}: absolute local path`);
   assert(!/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}/u.test(text), `${relative}: possible credential`);

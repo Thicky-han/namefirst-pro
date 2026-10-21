@@ -1,0 +1,683 @@
+{
+  "version": 1,
+  "evaluatedAt": "2026-10-21T13:49:50.250Z",
+  "fixtureSha256": "801ce2f7ed38586f2b238e137d1bed2c798b98b58e3864164603cf853104e407",
+  "kind": "authored-real-name-intent-and-synthetic-trust-holdout",
+  "unchangedTraining": {
+    "entities": 8,
+    "labels": 32
+  },
+  "intent": {
+    "rules": {
+      "cases": 36,
+      "correct": 20,
+      "abstentions": 0,
+      "informationCases": 19,
+      "navigationCases": 17,
+      "navigationOnInformation": 16,
+      "informationOnNavigation": 0
+    },
+    "learned": {
+      "cases": 36,
+      "correct": 25,
+      "abstentions": 6,
+      "informationCases": 19,
+      "navigationCases": 17,
+      "navigationOnInformation": 5,
+      "informationOnNavigation": 0
+    },
+    "rows": [
+      {
+        "entity": "GIMP",
+        "query": "GIMP docs",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Blender",
+        "query": "Blender download",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Inkscape",
+        "query": "Inkscape official website",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "KeePassXC",
+        "query": "KeePassXC",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Audacity",
+        "query": "Audacity官网",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Calibre",
+        "query": "Calibre download",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Krita",
+        "query": "Krita brushes",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Shotcut",
+        "query": "Shotcut tutorial",
+        "label": "informational",
+        "rule": "informational",
+        "learned": "informational"
+      },
+      {
+        "entity": "FreeCAD",
+        "query": "FreeCAD system requirements",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "KiCad",
+        "query": "KiCad guide",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "informational"
+      },
+      {
+        "entity": "Darktable",
+        "query": "news about Darktable releases",
+        "label": "informational",
+        "rule": "informational",
+        "learned": "informational"
+      },
+      {
+        "entity": "HandBrake",
+        "query": "HandBrake features",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "uncertain"
+      },
+      {
+        "entity": "Scribus",
+        "query": "Scribus pricing",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "informational"
+      },
+      {
+        "entity": "OBS Studio",
+        "query": "OBS Studio alternatives",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "uncertain"
+      },
+      {
+        "entity": "qBittorrent",
+        "query": "qBittorrent download",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Deluge",
+        "query": "Deluge port forwarding",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Syncthing",
+        "query": "Syncthing docs",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Restic",
+        "query": "Restic homepage",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "BorgBackup",
+        "query": "BorgBackup guide",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "informational"
+      },
+      {
+        "entity": "Duplicati",
+        "query": "Duplicati issues",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "uncertain"
+      },
+      {
+        "entity": "Rclone",
+        "query": "Rclone compatibility",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "uncertain"
+      },
+      {
+        "entity": "Nextcloud",
+        "query": "Nextcloud login",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Matomo",
+        "query": "Matomo official website",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Plausible Analytics",
+        "query": "Plausible Analytics pricing",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "informational"
+      },
+      {
+        "entity": "Uptime Kuma",
+        "query": "Uptime Kuma guide",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "informational"
+      },
+      {
+        "entity": "Forgejo",
+        "query": "Forgejo homepage",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Gitea",
+        "query": "Gitea docs",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "OpenProject",
+        "query": "OpenProject login",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Jitsi Meet",
+        "query": "Jitsi Meet download",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Element",
+        "query": "Element history",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "uncertain"
+      },
+      {
+        "entity": "Thunderbird",
+        "query": "Thunderbird account setup",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Bitwarden",
+        "query": "Bitwarden reset master password",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Cryptomator",
+        "query": "Cryptomator error",
+        "label": "informational",
+        "rule": "navigation",
+        "learned": "uncertain"
+      },
+      {
+        "entity": "VeraCrypt",
+        "query": "VeraCrypt安全吗",
+        "label": "informational",
+        "rule": "informational",
+        "learned": "informational"
+      },
+      {
+        "entity": "PeaZip",
+        "query": "PeaZip download",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      },
+      {
+        "entity": "Ventoy",
+        "query": "Ventoy 官网",
+        "label": "navigation",
+        "rule": "navigation",
+        "learned": "navigation"
+      }
+    ]
+  },
+  "verification": {
+    "cases": 24,
+    "passed": 23,
+    "authorityPositiveCases": 4,
+    "assertions": 3,
+    "trueAssertions": 3,
+    "falseAssertions": 0,
+    "candidateCases": 19,
+    "candidateFound": 19,
+    "purposeCandidateFound": 18,
+    "abstentions": 21,
+    "blocked": 10,
+    "notFound": 1,
+    "requests": 41,
+    "medianMs": 0.8111999999999995,
+    "p95Ms": 25.978700000000003,
+    "rows": [
+      {
+        "entity": "Apache Sunspire",
+        "scenario": "authority",
+        "purpose": "homepage",
+        "expected": "verified",
+        "candidate": true,
+        "status": "verified",
+        "pass": true,
+        "selected": "https://apachesunspire.example.org/",
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 2,
+        "elapsedMs": 25.978700000000003,
+        "failures": []
+      },
+      {
+        "entity": "Apache Moonharbor",
+        "scenario": "authority",
+        "purpose": "download",
+        "expected": "verified",
+        "candidate": true,
+        "status": "verified",
+        "pass": true,
+        "selected": "https://apachemoonharbor.example.org/download/",
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 2,
+        "elapsedMs": 1.6951999999999998,
+        "failures": []
+      },
+      {
+        "entity": "Apache Snowpetal",
+        "scenario": "same-origin",
+        "purpose": "homepage",
+        "expected": "verified",
+        "candidate": true,
+        "status": "verified",
+        "pass": true,
+        "selected": "https://apachesnowpetal.example.org/",
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 3,
+        "elapsedMs": 1.6966999999999928,
+        "failures": []
+      },
+      {
+        "entity": "Apache Rainlattice",
+        "scenario": "authority",
+        "purpose": "docs",
+        "expected": "verified",
+        "candidate": true,
+        "status": "unverified",
+        "pass": false,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": false,
+        "requests": 1,
+        "elapsedMs": 0.49040000000000816,
+        "failures": []
+      },
+      {
+        "entity": "Apache Windmirror",
+        "scenario": "mismatch",
+        "expected": "unverified",
+        "candidate": true,
+        "purpose": "homepage",
+        "status": "unverified",
+        "pass": true,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 2,
+        "elapsedMs": 2.147599999999997,
+        "failures": []
+      },
+      {
+        "entity": "Apache Fogcrown",
+        "scenario": "retired",
+        "expected": "unverified",
+        "candidate": true,
+        "purpose": "homepage",
+        "status": "unverified",
+        "pass": true,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 2,
+        "elapsedMs": 0.8042999999999978,
+        "failures": []
+      },
+      {
+        "entity": "Apache Mosscompass",
+        "scenario": "wrong-purpose",
+        "purpose": "download",
+        "expected": "unverified",
+        "candidate": true,
+        "status": "unverified",
+        "pass": true,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 2,
+        "elapsedMs": 1.200800000000001,
+        "failures": []
+      },
+      {
+        "entity": "Apache Stonepetal",
+        "scenario": "cross-origin",
+        "expected": "unverified",
+        "candidate": true,
+        "purpose": "homepage",
+        "status": "unverified",
+        "pass": true,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 3,
+        "elapsedMs": 0.8111999999999995,
+        "failures": []
+      },
+      {
+        "entity": "Apache Frostbrook",
+        "scenario": "challenge",
+        "expected": "blocked",
+        "candidate": true,
+        "purpose": "homepage",
+        "status": "blocked",
+        "pass": true,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 2,
+        "elapsedMs": 1.0417000000000058,
+        "failures": []
+      },
+      {
+        "entity": "Apache Sandbloom",
+        "scenario": "login",
+        "expected": "blocked",
+        "candidate": true,
+        "purpose": "homepage",
+        "status": "blocked",
+        "pass": true,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 2,
+        "elapsedMs": 0.9457000000000022,
+        "failures": []
+      },
+      {
+        "entity": "Copperlily",
+        "scenario": "self-claim",
+        "expected": "unverified",
+        "candidate": true,
+        "purpose": "homepage",
+        "status": "unverified",
+        "pass": true,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 1,
+        "elapsedMs": 1.1805999999999983,
+        "failures": []
+      },
+      {
+        "entity": "Silversprout",
+        "scenario": "circular",
+        "expected": "unverified",
+        "candidate": true,
+        "purpose": "homepage",
+        "status": "unverified",
+        "pass": true,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 1,
+        "elapsedMs": 0.7403000000000048,
+        "failures": []
+      },
+      {
+        "entity": "Goldenheron",
+        "scenario": "open-hint",
+        "expected": "unverified",
+        "candidate": true,
+        "purpose": "homepage",
+        "status": "unverified",
+        "pass": true,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 3,
+        "elapsedMs": 1.8196999999999974,
+        "failures": []
+      },
+      {
+        "entity": "Ivorypines",
+        "scenario": "ambiguous",
+        "expected": "ambiguous",
+        "candidate": true,
+        "purpose": "homepage",
+        "status": "ambiguous",
+        "pass": true,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 4,
+        "elapsedMs": 1.2396999999999991,
+        "failures": []
+      },
+      {
+        "entity": "Plumfountain",
+        "scenario": "no-candidate",
+        "expected": "not-found",
+        "candidate": false,
+        "purpose": "homepage",
+        "status": "not-found",
+        "pass": true,
+        "selected": null,
+        "candidateFound": false,
+        "purposeCandidateFound": false,
+        "requests": 0,
+        "elapsedMs": 0.05460000000000775,
+        "failures": []
+      },
+      {
+        "entity": "Bluecedar",
+        "scenario": "offline-cache",
+        "expected": "cached",
+        "candidate": true,
+        "purpose": "homepage",
+        "status": "cached",
+        "pass": true,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 0,
+        "elapsedMs": 0.2927999999999997,
+        "failures": [
+          "permission-denied"
+        ]
+      },
+      {
+        "entity": "Apache Redthrush",
+        "scenario": "source-429",
+        "expected": "blocked",
+        "candidate": false,
+        "purpose": "homepage",
+        "status": "blocked",
+        "pass": true,
+        "selected": null,
+        "candidateFound": false,
+        "purposeCandidateFound": false,
+        "requests": 1,
+        "elapsedMs": 0.2050999999999874,
+        "failures": [
+          "http-429"
+        ]
+      },
+      {
+        "entity": "Apache Lilacwind",
+        "scenario": "source-invalid",
+        "expected": "blocked",
+        "candidate": false,
+        "purpose": "homepage",
+        "status": "blocked",
+        "pass": true,
+        "selected": null,
+        "candidateFound": false,
+        "purposeCandidateFound": false,
+        "requests": 1,
+        "elapsedMs": 0.19719999999999516,
+        "failures": [
+          "invalid-source-response"
+        ]
+      },
+      {
+        "entity": "Apache Tealridge",
+        "scenario": "target-failure",
+        "expected": "blocked",
+        "candidate": true,
+        "purpose": "homepage",
+        "status": "blocked",
+        "pass": true,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 2,
+        "elapsedMs": 0.36240000000000805,
+        "failures": [
+          "http-503"
+        ]
+      },
+      {
+        "entity": "Apache Ambercloud",
+        "scenario": "permission-denied",
+        "expected": "blocked",
+        "candidate": false,
+        "purpose": "homepage",
+        "status": "blocked",
+        "pass": true,
+        "selected": null,
+        "candidateFound": false,
+        "purposeCandidateFound": false,
+        "requests": 0,
+        "elapsedMs": 0.07989999999999498,
+        "failures": [
+          "permission-denied"
+        ]
+      },
+      {
+        "entity": "Apache Coralfern",
+        "scenario": "source-redirect",
+        "expected": "blocked",
+        "candidate": false,
+        "purpose": "homepage",
+        "status": "blocked",
+        "pass": true,
+        "selected": null,
+        "candidateFound": false,
+        "purposeCandidateFound": false,
+        "requests": 2,
+        "elapsedMs": 0.33559999999999945,
+        "failures": [
+          "unsupported-content-type"
+        ]
+      },
+      {
+        "entity": "Apache Sageribbon",
+        "scenario": "request-budget",
+        "expected": "blocked",
+        "candidate": true,
+        "purpose": "homepage",
+        "status": "blocked",
+        "pass": true,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 1,
+        "elapsedMs": 0.37940000000000396,
+        "failures": [
+          "request-budget-exhausted"
+        ]
+      },
+      {
+        "entity": "Apache Duskwing",
+        "scenario": "target-timeout",
+        "expected": "blocked",
+        "candidate": true,
+        "purpose": "homepage",
+        "status": "blocked",
+        "pass": true,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 2,
+        "elapsedMs": 34.79010000000001,
+        "failures": [
+          "request-timeout"
+        ]
+      },
+      {
+        "entity": "Apache Dawnreed",
+        "scenario": "opaque-redirect",
+        "expected": "blocked",
+        "candidate": true,
+        "purpose": "homepage",
+        "status": "blocked",
+        "pass": true,
+        "selected": null,
+        "candidateFound": true,
+        "purposeCandidateFound": true,
+        "requests": 2,
+        "elapsedMs": 0.6384999999999934,
+        "failures": [
+          "redirect-uninspectable"
+        ]
+      }
+    ]
+  },
+  "limitations": "Intent queries are manually authored using real software names, not sampled user traffic. Trust entities and all HTTP responses are synthetic. No live search acceptance or whole-web accuracy is estimated. Reuse the existing L4 training set without fitting to these cases.",
+  "timing": "Local synthetic responses, per-origin pacing disabled, one intentional 25ms target timeout. Not live network latency or default online budgets."
+}

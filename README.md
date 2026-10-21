@@ -1,80 +1,49 @@
 # NameFirst Pro
 
-**名称优先，现场取证。** 独立开发的浏览器扩展，目标是在百度/Bing 搜索时识别寻找官网的意图，为未知名称发现候选、实时核对证据，并通过明确反馈改进本地判断。
+![NameFirst Pro 候选图标](./assets/brand/icon-128.png)
 
-[English](./README.en.md) · [项目说明](./PROJECT_SPEC.md) · [实施计划](./IMPLEMENTATION_PLAN.md) · [L5 报告](./STAGE5_REPORT.md) · [数据管理](./MANAGEMENT.md) · [本地学习](./LEARNING.md) · [隐私](./PRIVACY.md) · [AGPL-3.0](./LICENSE)
+**名称优先，现场取证。** 在 Bing/百度当前搜索中判断是否寻找官方入口，为未知名称发现候选、核对证据，并从明确反馈中改进本地意图判断。独立 AGPL-3.0-only 项目，非 fork；图标按本轮要求基于 NameFirst 原创 NF/上箭头精修，待确认。
 
-**当前为 `0.5.0-stage5` 管理与迁移开发预览。** 已实现实时证据核验、明确反馈学习、个人入口管理、JSON 备份预览/合并/替换、清空与撤销、历史证据及失效说明。按用户要求，正常在线搜索矩阵不再作为阶段门槛；既有实测结果仍按实际记录。目前没有 GitHub 发行包。
+[简体中文](./README.md) · [繁體中文](./README.zh-TW.md) · [English](./README.en.md) · [日本語](./README.ja.md) · [한국어](./README.ko.md) · [Français](./README.fr.md) · [Deutsch](./README.de.md) · [Español](./README.es.md) · [Português](./README.pt-BR.md)
 
-目前只有 Apache 官方项目数据政策可提供正向认证；Wikidata 和网页自称仅提供线索。名称不必在安装包中预先收录，原结果缺少入口时仍可补充发现；证据不足会保留待核验，不能据此声称已经能够认证所有官网。
+当前为 **1.0.0-rc.1 本地发行候选**。Chrome/Edge 包、对应源码、校验和在 `release/1.0.0-rc.1/`，公开仓库/下载地址将在确认发布后建立。普通安装不需要 Node、账号、API Key 或项目服务器。界面目前简体中文；九语 README 不等于九语界面。
 
-## 与 NameFirst 的目标差异
+## 安装和使用
 
-| | NameFirst | NameFirst Pro 目标 |
-| --- | --- | --- |
-| 覆盖方式 | 预先整理的官网目录与个人记忆 | 本次搜索发现候选，不要求名称已收录 |
-| 官网核验 | 制作目录时核实 | 当前导航任务现场取证，展示来源和时间 |
-| 学习 | 个人显式记忆 | 意图不确定性判断、明确反馈增量学习和个人记忆 |
-| 失败处理 | 未覆盖则不认定 | 证据不足、歧义、网络受阻分别说明，允许拒绝认定 |
-| 项目来源 | 历史 fork 项目 | 独立代码、Git 历史与插件身份 |
-| 许可 | 原版非商业共享源码 | AGPL-3.0-only 标准开源，允许商用 |
+1. Chrome 选 `namefirst-pro-1.0.0-rc.1-chrome.zip`，Edge 选 `namefirst-pro-1.0.0-rc.1-edge.zip`；全部解压到长期保留的文件夹，源码 ZIP 不作插件加载包。
+2. 打开 `chrome://extensions` / `edge://extensions`，开启开发者模式，加载直接包含 `manifest.json` 的解压目录。
+3. 打开工具栏弹窗，保持总开关与所需引擎开关开启；按需点击“开启联网核验权限”，阅读浏览器提示。未授权不读取外部证据；可随时撤销。
+4. 在普通桌面 Bing/百度搜索名称，例如 `Apache Arrow official website`。查看独立卡片的本次状态、确切入口、来源和时间；不会自动跳转，原结果保留。
+5. 教程/新闻等资料查询通常不取证；意图误判时可明确选择“这次查资料”。同名、网络失败或证据不足允许不下结论。
+6. 从弹窗进入数据管理，导出 JSON；在新浏览器选择文件、预览合并/替换，再确认。权限/开关/缓存/撤销不迁移；未知格式不覆盖。卸载前先备份。
+7. 更新前备份，完整替换加载目录中的文件，在扩展管理页“重新加载”，再刷新搜索页；只替换文件可能继续运行旧后台。
 
-实时核验需要网络与用户授予的网站访问权限。搜索排名、HTTPS、网页自称“官网”、模型高分及用户选择均不单独证明官方身份；也不能保证任意未知名称都可自动认证。
+逐步安装、暂停、反馈、恢复与故障处理见 [安装说明](./INSTALL.md)，数据格式与并发保护见 [管理说明](./MANAGEMENT.md)，网络接收方及本地保留见 [隐私](./PRIVACY.md)。
 
-## 当前开发版本：构建
+## 能力与边界
 
-需要 Node.js 24+、pnpm 11.25.0。项目已有稳定插件公钥；重新安装依赖不需要重新生成身份。
+未知名称不需要出现在已装目录，候选来自当前结果页及受限公开发现。当前唯一正向权威政策支持 Apache 官方项目目录明确给出的主页/下载地址；Wikidata、自称官网、排名、HTTPS、个人偏好和模型分数均不能单独认证。文档/登录没有通用权威政策，不保证任意官网都能认证，也不判断软件安全或资质。
+
+仅支持已识别的桌面 Bing 三个 HTTPS 主机 `/search` 和 `www.baidu.com/s` UTF-8 普通网页结果。验证码、隐藏/未知布局、登录、限流、网络超时会停止或降级；不绕过限制。正常在线矩阵按本轮要求不作阶段门槛，历史记录仍据实保留。
+
+明确标签才训练，本地模型与个人入口/别名/否定分开；跳过/未点击不训练。可关闭学习、关闭主动提示、编辑/删除/撤销。默认不存完整搜索历史。历史证据始终标为缓存，失败不刷新旧认证时间，每次导航仍取当前证据。
+
+[公开评估](./EVALUATION.md)：36 条人工编写的真实名称查询，学习后正确 25、拒绝判断 6，仍有 5 条资料误触发；24 项合成认证场景状态符合 23 项、3 次认证中误认证 0。文档入口有一项安全拒绝但未达到期望。不是自然流量或全网准确率。
+
+## 开发与审阅
+
+Node.js 24+、pnpm 11.25.0：
 
 ```powershell
 pnpm install --frozen-lockfile
 pnpm check
 pnpm test
-pnpm evaluate
+pnpm evaluate:release
 pnpm build
 ```
 
-构建输出为项目内的 `dist/chrome` 和 `dist/edge`，含可导入的 `core/resolver.js`。解析和域名依赖已打包在本地；不运行远端脚本，不需要账号、API Key 或项目服务器。依赖和许可见 [DEPENDENCIES.md](./DEPENDENCIES.md)。
+开发者准备发行还需 Git、Python 3.9+：`pnpm release:prepare`、`pnpm release:verify`；本地候选构建用待确认图标供审阅，普通构建在品牌批准前不应用。`pnpm test:packaged-browser` 只加载从 ZIP 实际解压的包。运行时依赖本地打包，无远端脚本；详见 [依赖](./DEPENDENCIES.md)、[核心接口](./CORE_API.md)。
 
-## L1 核心演示
+[发行说明](./RELEASE_NOTES.md) · [L6 报告](./STAGE6_REPORT.md) · [实施计划](./IMPLEMENTATION_PLAN.md) · [本地学习](./LEARNING.md) · [贡献](./CONTRIBUTING.md) · [许可](./LICENSE)
 
-```powershell
-# 不加 --live，默认不联网，返回权限未开启
-node scripts/resolve.mjs 'Apache Arrow 官网'
-# 通过当前 Node 网络进行现场发现与核验
-node scripts/resolve.mjs 'Apache Arrow 官网' --live
-# 受控的实体隔离回归评估，不访问网络
-pnpm evaluate
-```
-
-结果包含状态、来源、时间、失败原因和实际请求数。`unverified`、`ambiguous`、`blocked` 都是允许的真实结果，不会强行生成认证。某些网络中 Node 直接请求失败而浏览器可用；本环境有此情况，CLI 超时没有计作通过。
-
-浏览器中的独立核心实验可运行 `node scripts/core-browser-smoke.mjs --live --target=chrome`；搜索页在线实验为 `node scripts/search-browser-smoke.mjs --live --target=chrome`，可加 `--engine=bing` 或 `--engine=baidu`。这些实验采用单独的临时测试授权配置，真实可选权限对话框仍需有界面验收。详细接口见 [CORE_API.md](./CORE_API.md)。
-
-## 逐步加载并使用双引擎预览
-
-1. 先完成上面的构建。
-2. 在 Chrome 地址栏打开 `chrome://extensions`，或在 Edge 打开 `edge://extensions`。
-3. 开启开发者/开发人员模式，点击“加载已解压的扩展程序”。
-4. Chrome 选择项目内 `dist/chrome`；Edge 选择 `dist/edge`。所选目录须直接包含 `manifest.json`。
-5. 在工具栏扩展菜单中打开 **NameFirst Pro — 双引擎预览**；保持总开关及要使用的引擎开关开启。
-6. 点击“开启联网核验权限”，阅读浏览器提示并按需授予。未授权时搜索页只显示权限提示，不访问候选站点或取证来源。
-7. 打开 Bing 或百度的普通桌面网页搜索，搜索 `Apache Arrow official website`。扩展在可识别的主要结果区顶部显示核验过程；引擎要求验证时不会绕过，访问失败也可能显示未完成，不保证每次成功。
-8. 展开证据可查看来源与读取时间；点击入口由你决定是否打开。原搜索结果保留，扩展不会自动跳转。
-9. `Rust 官网` 可展示同名歧义；`Zotero 官网` 的一般公开知识线索不足以认证；`Apache Arrow 教程` 保留普通搜索。不确定意图按预算询问；“我在找入口”/“这次查资料”保存明确标签，“跳过本次”不训练。工具栏弹窗的“仅本次按入口核验”不保存标签。
-10. 可隐藏本次卡片、重新核验、暂停当前引擎，或在弹窗关闭总开关。两个引擎开关独立。点击“撤销权限”可停止跨站取证；恢复权限或设置后重新核验当前页。更新本地代码后重新构建、在扩展管理页重新加载，并刷新已有搜索页。L2 的总开关/Bing 偏好会保留；新增百度网站访问需按浏览器提示处理。学习和主动提示均可在弹窗关闭；关闭学习仍保留个人入口。
-
-支持 `www.bing.com`、`cn.bing.com`、`bing.com` 的 HTTPS `/search` 普通结果页，以及 `www.baidu.com/s` 的 UTF-8 `wd`/`word` 查询和已识别结果布局。不支持百度移动端、新闻、图片或验证码页。百度不透明跳转缺少明确安全目标时会跳过，不猜展示域名，也不将“官网”标签作为证据。这四个搜索主机为必需网站权限，其他公开 HTTPS 网站为可选权限。弹窗折叠区保留阶段 0 的单页联网诊断，读取成功不代表官网认证。
-
-## 本地反馈与个人入口
-
-展开搜索卡片的“纠正意图或记住个人入口”，可给出明确标签，或输入个人网址与可选别名。个人入口标为“未经官方认证”，不会替换官方证据结论，也不会自动访问保存的目标。资料查询不显示卡片时，可从工具栏弹窗的“当前搜索”纠正。更改后可单步撤销；另一页面已有新更改时旧撤销会拒绝。
-
-只保存明确标签的查询指纹/通用特征，以及主动保存的个人名称和网址，不默认存全部搜索历史。提示最多每 5 分钟一次、UTC 日 3 次。容量和模型边界见 [本地学习说明](./LEARNING.md)。从工具栏打开数据管理页，可搜索、编辑、删除、清空、撤销及导出 JSON；跨 Chrome/Edge 选择备份、先预览再合并或替换。权限和开关不迁移，未知格式不覆盖数据；卸载前先备份。具体步骤见 [数据管理](./MANAGEMENT.md)。历史来源始终标为缓存，断网不会刷新旧核验时间。
-
-## 验证与后续
-
-浏览器验收：`pnpm test:browser`，使用独立临时配置。可通过环境变量 `NAMEFIRST_PRO_CHROME` 和 `NAMEFIRST_PRO_EDGE` 指定浏览器程序；默认使用本机 Chrome/Edge。在线能力实验：`node scripts/browser-smoke.mjs --live`。在线实验使用单独授权的测试副本，不修改产品权限；不自动操作真实权限对话框，详见阶段报告。
-
-`pnpm test:search-browser` 检查 Chrome/Edge × Bing/百度受控矩阵；`pnpm test:bing-browser` 保留只跑 Bing 的兼容入口；`pnpm test:core-browser` 检查独立核心；`pnpm test:browser` 检查弹窗与权限边界。受控页面、真实在线结果及尚未自动化的权限提示分别记录在 [L3 报告](./STAGE3_REPORT.md)。[L2](./STAGE2_REPORT.md)、[L1](./STAGE1_REPORT.md)和[阶段 0](./BASELINE_REPORT.md)报告保留历史状态。新增 `pnpm evaluate:learning` 和 `pnpm test:learning-browser`。L4 结果见 [阶段报告](./STAGE4_REPORT.md)，包括实体隔离的合成评估、实际界面反馈及真实浏览器重启检查。L5 管理、文件迁移、升级与缓存结果见 [L5 报告](./STAGE5_REPORT.md)。新增 `pnpm test:management-browser`、`pnpm benchmark:storage`。下一阶段为 L6 首版交付与发布材料；公开发布仍需最终确认。
-
-贡献见 [CONTRIBUTING.md](./CONTRIBUTING.md)。本项目原创代码采用 AGPL-3.0-only；第三方开发工具保留各自许可。完整许可为准，本 README 为简述。
+原创代码及本轮授权的 Pro 衍生品牌按 AGPL-3.0-only，允许商用并遵守其条款；依赖保留各自许可。不继承原项目的非商业公众许可或 CLA，不复制其源码、数据、插件身份或 Git 历史；品牌例外来源见 [记录](./assets/brand/README.md)。

@@ -20,7 +20,7 @@ const management = createManagement({ store: learningStore, cache: evidenceCache
 
 async function getState() {
   const settings = readSettings((await chrome.storage.local.get(SETTINGS_KEY))[SETTINGS_KEY]);
-  return { ...settings, stage: 5, version: chrome.runtime.getManifest().version_name, networkAllowed: await chrome.permissions.contains({ origins: ORIGINS }) };
+  return { ...settings, stage: 6, version: chrome.runtime.getManifest().version_name, networkAllowed: await chrome.permissions.contains({ origins: ORIGINS }) };
 }
 async function updateSettings(patch) {
   const validated = settingsPatch(patch);

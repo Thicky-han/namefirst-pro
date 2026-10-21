@@ -1,43 +1,49 @@
 # NameFirst Pro
 
-**Names first. Evidence at search time.** An independently implemented browser extension intended to identify official-entry navigation intent, discover candidates for unseen names, collect live evidence, and improve local intent decisions from explicit feedback.
+![Pro icon proposal](./assets/brand/icon-128.png)
 
-[简体中文](./README.md) · [Specification (Chinese)](./PROJECT_SPEC.md) · [Stage plan (Chinese)](./IMPLEMENTATION_PLAN.md) · [Privacy (Chinese)](./PRIVACY.md) · [AGPL-3.0](./LICENSE)
+**Names first. Evidence at search time.** An independent AGPL-3.0-only extension for navigation intent, unseen-name discovery, bounded current evidence and explicit local learning. This is a new project, not a fork. At the maintainer's request the pending Pro artwork refines the original NameFirst NF/arrow mark.
 
-**Current status: `0.5.0-stage5`, a management and migration development preview.** Personal entry editing, local label management, JSON backup previews, merge/replace imports, undo, and clearly historical evidence summaries are implemented. Normal live search acceptance is no longer a stage gate by user instruction; previous observations remain factual records. There is no published release or download package.
+[简体中文](./README.md) · [繁體中文](./README.zh-TW.md) · [English](./README.en.md) · [日本語](./README.ja.md) · [한국어](./README.ko.md) · [Français](./README.fr.md) · [Deutsch](./README.de.md) · [Español](./README.es.md) · [Português](./README.pt-BR.md)
 
-The current positive authority policy covers explicitly named entries in the Apache-maintained project directory. Wikidata provides discovery hints only. Entity names do not have to appear in an installed catalog; missing search-result entries can still enter supplemental discovery. This is not universal official-site certification. See the [stage-4 report (Chinese)](./STAGE4_REPORT.md) and [local-learning details](./LEARNING.md) and [core API](./CORE_API.md).
+**1.0.0-rc.1 is a local release candidate awaiting approval.** Browser/source ZIPs and checksums are in `release/1.0.0-rc.1/`; a public repository/download will be established after approval. Ready-made packages need no Node, account, API key or project backend. The UI is Simplified Chinese; nine translated READMEs do not mean nine UI locales.
 
-The intended first release supports desktop Chrome and Edge with Bing and Baidu. It should not require an included entity catalog, user account, API key, paid API, or a maintained project backend. Network access and optional website permissions are required for live evidence collection.
+## Install and use
 
-Search rank, HTTPS, a self-declared “official” title, a model score, and personal feedback cannot independently prove official identity. Unknown names must be eligible for discovery; insufficient evidence must allow abstention. Universal automatic certification is not promised.
+1. Choose `namefirst-pro-1.0.0-rc.1-chrome.zip` or `namefirst-pro-1.0.0-rc.1-edge.zip`. Extract everything into a permanent folder. The source ZIP is not an installable extension.
+2. Open `chrome://extensions` / `edge://extensions`, enable Developer mode, and Load unpacked from the extracted folder directly containing `manifest.json`.
+3. Open the toolbar popup, enable the global/desired engine switches and optionally select “开启联网核验权限”. Read the browser prompt. No external evidence is read before permission; access is revocable.
+4. Search a normal desktop Bing/Baidu page, e.g. `Apache Arrow official website`. Read the card's current state, exact entry, sources/time. Original results remain and no automatic navigation occurs.
+5. Information queries normally avoid evidence tasks. Correct mistakes with “这次查资料”. Ambiguity, insufficient authority or failed networking may correctly produce abstention.
+6. Open management, export JSON, select it in a fresh browser, preview merge/replace, then confirm. Permissions, preferences, cache and undo are excluded. Unknown formats preserve existing data. Back up before uninstalling.
+7. To update, back up, replace all unpacked files, Reload the extension in browser settings, then refresh existing search tabs. Merely overwriting disk files can leave an old worker running.
 
-## Build the current baseline
+See [detailed installation](./INSTALL.en.md), [management](./MANAGEMENT.md) and [privacy](./PRIVACY.md).
 
-Use Node.js 24+ and pnpm 11.25.0:
+## Capabilities and limits
+
+Names need not occur in an installed catalog. Current results and bounded public discovery supply candidates. The sole positive authority policy currently covers explicitly named homepage/download entries in the Apache-maintained directory. Wikidata, self-claims, rank, HTTPS, personal preferences and model scores cannot certify identity on their own. There is no general docs/login policy or universal official-site/security guarantee.
+
+Only recognized desktop Bing HTTPS `/search` pages and `www.baidu.com/s` UTF-8 web results are supported. Challenges, hidden/unknown layouts, login, limits and timeouts stop or downgrade tasks; nothing bypasses them. Normal live-search acceptance is outside this stage by user instruction; historical observations remain factual records.
+
+Only explicit labels train the bounded local model. Personal URLs/aliases/rejections are separate and uncertified. Learning and prompts can be disabled; records can be edited/deleted/undone. Complete search history is not stored. Historical evidence is always cached, failed refreshes never renew its timestamp, and every navigation task still collects current evidence.
+
+[Public evaluation](./EVALUATION.md): on 36 manually authored real-name queries, the unchanged trained model correctly classified 25, abstained on 6 and wrongly triggered navigation on 5 information queries. In 24 synthetic trust cases, desired outcomes matched 23; none of 3 assertions was false. One docs goal safely abstained rather than reaching the desired capability. These are not sampled user traffic or whole-web accuracy.
+
+## Build and review
+
+Node.js 24+, pnpm 11.25.0:
 
 ```powershell
 pnpm install --frozen-lockfile
 pnpm check
 pnpm test
-pnpm evaluate
+pnpm evaluate:release
 pnpm build
 ```
 
-Open `chrome://extensions` or `edge://extensions`, enable developer mode, and load the corresponding project folder `dist/chrome` or `dist/edge`. Select the folder directly containing `manifest.json`.
+Release preparation additionally needs Python 3.9+ and Git: `pnpm release:prepare`, `pnpm release:verify`. Candidate archives render the pending icon for review; normal builds do not apply it before approval. `pnpm test:packaged-browser` loads packages actually extracted from ZIPs. All runtime dependencies are local; see [dependencies](./DEPENDENCIES.md) and [core API](./CORE_API.md).
 
-Open the extension popup, keep the global and desired engine switches enabled, and grant optional network access if desired. Open an ordinary Bing or Baidu web search for `Apache Arrow official website`. The card shows progress and, when the current evidence satisfies the policy, a verified entry with sources and time. Network failures remain incomplete. Original results stay visible and navigation requires your click.
+[Release notes](./RELEASE_NOTES.md) · [Stage 6](./STAGE6_REPORT.md) · [Plan](./IMPLEMENTATION_PLAN.md) · [Learning](./LEARNING.md) · [Contributing](./CONTRIBUTING.md) · [License](./LICENSE)
 
-Try `Rust official website` for ambiguity, `Zotero official website` for insufficient authority evidence, or `Apache Arrow tutorial` for a normal informational search. Uncertain queries ask within a limited prompt budget. Explicit navigation/information feedback stores a local label; skipping does not train. The popup also offers a one-time confirmation without a training label. Use the popup to resume either engine or revoke access. Existing L2 global/Bing preferences are preserved; browser approval may be needed for the new Baidu host access. After rebuilding an update, reload the extension and refresh existing search pages.
-
-Supported pages are HTTPS `/search` web results on `www.bing.com`, `cn.bing.com`, and `bing.com`, plus UTF-8 `wd`/`word` searches at `www.baidu.com/s` in recognized desktop layouts. Opaque Baidu links without a safe explicit landing hint are skipped; displayed domains and official badges do not establish identity. These four search hosts are required permissions; external HTTPS access remains optional. Without it, the card asks for permission and makes no external evidence requests. The collapsed stage-0 diagnostic reads a manually entered public URL and does not certify official identity.
-
-The core bundles local parsing/domain libraries and retains their licenses; see [dependencies](./DEPENDENCIES.md). It does not load remote scripts. Playwright and esbuild are development tools. `pnpm test:browser` checks the popup and permission boundary; `pnpm test:core-browser` checks the compiled core; `pnpm test:search-browser` checks the controlled Chrome/Edge × Bing/Baidu matrix using isolated profiles. Browser executable overrides are `NAMEFIRST_PRO_CHROME` and `NAMEFIRST_PRO_EDGE`.
-
-Use `node scripts/resolve.mjs 'Apache Arrow official website' --live` for the Node-network core demo, or `node scripts/search-browser-smoke.mjs --live --target=chrome` for live checks of both engines; use `--engine=bing` or `--engine=baidu` to narrow the run. Automated authorized browser tests grant HTTPS access to a separate test copy; the real optional-permission dialog remains a manual acceptance item. Failed networking or insufficient evidence must remain blocked/unverified. `pnpm evaluate` runs synthetic entity-disjoint regression cases; its results do not estimate whole-web accuracy.
-
-The feedback drawer and toolbar popup can label the current search or save a personal target and optional alias. Personal entries are visibly uncertified and do not replace evidence-based results. Learning and prompts have separate switches; disabling learning retains personal memory. Only explicit labels store query fingerprints and generic features, alongside deliberately saved personal names/URLs; full search history is not stored. Undo refuses stale revisions. Run `pnpm evaluate:learning` and `pnpm test:learning-browser` for the local learning checks. Open the management page from the popup to edit records, export JSON, and preview a merge or replacement import in another Chrome/Edge profile. Permissions, preferences, undo and historical evidence are excluded from portable backups. Unknown versions preserve existing records. Historical evidence is always cached and cannot renew a current certificate. Back up before uninstalling. See [management details](./MANAGEMENT.md), [L5 results](./STAGE5_REPORT.md), `pnpm test:management-browser` and `pnpm benchmark:storage`. L6 covers release preparation; publication still requires final confirmation. The [baseline report](./BASELINE_REPORT.md) and [stage-1 report](./STAGE1_REPORT.md) remain historical records.
-
-## License and contributions
-
-Original code is licensed under **AGPL-3.0-only**, which permits commercial use subject to its terms. See [LICENSE](./LICENSE), [NOTICE](./NOTICE), and [contribution guidance](./CONTRIBUTING.md). This project does not inherit NameFirst's noncommercial license or CLA and does not copy its source, catalog, icons, keys, tests, or Git history.
+Original code and the maintainer-authorized Pro artwork derivative use AGPL-3.0-only, permitting commercial use under its terms. Dependencies retain their licenses. This project does not inherit the predecessor's noncommercial license/CLA or copy its code, catalog, extension identity or Git ancestry. The narrow brand exception is documented in [provenance](./assets/brand/README.md).

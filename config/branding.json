@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "approval": "pending",
+  "master": "assets/brand/namefirst-pro-master.png",
+  "description": "Maintainer-requested refinement of the original NameFirst NF/upward-arrow mark; preview before approval.",
+  "palette": {
+    "tile": "#202455",
+    "arrow": "#70d9ff",
+    "pro": "champagne-gold",
+    "uiAccent": "#3a48a2"
+  }
+}

@@ -2,7 +2,11 @@
 
 This is an independent project under AGPL-3.0-only. Read PROJECT_SPEC.md and
 IMPLEMENTATION_PLAN.md before implementing the next stage. Do not copy NameFirst
-or uBlacklist source, tests, data, icons, keys, or Git history into this repository.
+or uBlacklist source, tests, data, keys, or Git history into this repository.
+Brand exception explicitly requested by the maintainer on 2026-10-21: refine the
+original NameFirst NF/arrow artwork for the Pro icon. Record provenance in
+assets/brand/README.md; never reuse the upstream prohibition icon. The proposed
+brand remains pending approval; preview packages may render it for review.
 
 Use native ES modules. The L1 core bundles the reviewed parsing/domain packages
 listed in DEPENDENCIES.md; keep all runtime code local. Review and lock any later

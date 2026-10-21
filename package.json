@@ -1,6 +1,6 @@
 {
   "name": "namefirst-pro",
-  "version": "0.5.0-stage5",
+  "version": "1.0.0-rc.1",
   "private": true,
   "description": "Independent, local-first browser extension for evidence-based official entry discovery.",
   "license": "AGPL-3.0-only",
@@ -23,7 +23,12 @@
     "benchmark:storage": "node scripts/storage-benchmark.mjs",
     "resolve": "node scripts/resolve.mjs",
     "evaluate": "node scripts/evaluate.mjs",
-    "evaluate:learning": "node scripts/learning-evaluate.mjs"
+    "evaluate:learning": "node scripts/learning-evaluate.mjs",
+    "evaluate:release": "node scripts/release-evaluate.mjs",
+    "release:prepare": "node scripts/package-release.mjs",
+    "release:verify": "node scripts/verify-release.mjs",
+    "test:packaged-browser": "node scripts/packaged-browser-smoke.mjs",
+    "release:rebuild-check": "node scripts/rebuild-release.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

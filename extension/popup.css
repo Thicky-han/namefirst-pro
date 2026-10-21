@@ -1,32 +1,35 @@
 /* SPDX-License-Identifier: AGPL-3.0-only */
-:root { color-scheme: light; font-family: system-ui, "Microsoft YaHei", sans-serif; color: #18343a; background: #f3f7f6; }
+:root { color-scheme: light; font-family: system-ui, "Microsoft YaHei", sans-serif; color: #222b48; background: #f5f6fd; }
 * { box-sizing: border-box; }
 body { margin: 0; width: 410px; }
 main { padding: 24px; }
 header { display: flex; align-items: center; gap: 12px; }
-.mark { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 14px; background: #153e43; color: white; font-size: 27px; font-weight: 800; position: relative; }
-.mark span { color: #a9e6c4; font-size: 20px; position: absolute; right: 1px; top: -2px; }
+.mark { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 14px; background: #24295b; color: white; font-size: 27px; font-weight: 800; position: relative; }
+.mark span { color: #9cdeff; font-size: 20px; position: absolute; right: 1px; top: -2px; }
 h1 { font-size: 23px; letter-spacing: -.6px; margin: 0; }
-h1 b { color: #27725c; }
-header p { margin: 4px 0 0; font-size: 12px; color: #5c706e; }
-.stage { margin: 22px 0 16px; color: #39705e; font-size: 12px; font-weight: 650; }
-section { padding: 15px; margin: 12px 0; background: white; border: 1px solid #dce6e2; border-radius: 12px; }
+h1 b { color: #4754ac; }
+header p { margin: 4px 0 0; font-size: 12px; color: #626c86; }
+.stage { margin: 22px 0 16px; color: #515e94; font-size: 12px; font-weight: 650; }
+section { padding: 15px; margin: 12px 0; background: white; border: 1px solid #dde2f1; border-radius: 12px; }
 h2 { font-size: 14px; margin: 0 0 8px; }
 p { font-size: 13px; line-height: 1.65; margin: 8px 0; }
-#permission { font-weight: 650; color: #31654d; }
+#permission { font-weight: 650; color: #40518a; }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; }
-button { border: 1px solid transparent; border-radius: 8px; color: #fff; background: #205846; padding: 10px 12px; font: inherit; font-size: 12px; cursor: pointer; }
+button { border: 1px solid transparent; border-radius: 8px; color: #fff; background: #3a48a2; padding: 10px 12px; font: inherit; font-size: 12px; cursor: pointer; }
 button:disabled { opacity: .55; cursor: default; }
-button.secondary { border-color: #cfddd7; background: #fff; color: #375b4f; }
+button.secondary { border-color: #d3d9ed; background: #fff; color: #46547b; }
 label { display: block; font-weight: 650; font-size: 13px; margin: 18px 0 8px; }
-input[type="url"], input[type="text"] { display: block; width: 100%; border: 1px solid #adbbb4; border-radius: 8px; padding: 11px; font: inherit; font-size: 13px; background: white; }
-input[type="checkbox"] { accent-color: #205846; margin-right: 5px; }
-details { margin-top: 16px; font-size: 12px; color: #4e655a; }
+input[type="url"], input[type="text"] { display: block; width: 100%; border: 1px solid #b0bad6; border-radius: 8px; padding: 11px; font: inherit; font-size: 13px; background: white; }
+input[type="checkbox"] { accent-color: #3a48a2; margin-right: 5px; }
+details { margin-top: 16px; font-size: 12px; color: #536080; }
 summary { cursor: pointer; }
 [hidden] { display: none !important; }
 #current-feedback form { margin: 12px 0; }
 #current-personal { color: #684b85; overflow-wrap: anywhere; }
-:focus-visible { outline: 3px solid #7ba99b; outline-offset: 2px; }
-.hint { color: #5c6e68; font-size: 12px; }
+:focus-visible { outline: 3px solid #8e9de1; outline-offset: 2px; }
+.hint { color: #65708b; font-size: 12px; }
 output { display: block; margin-top: 12px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; line-height: 1.6; }
-footer { border-top: 1px solid #d5e1dc; margin-top: 22px; padding-top: 12px; display: flex; justify-content: space-between; font-size: 10px; color: #5e746b; }
+footer { border-top: 1px solid #d9dff1; margin-top: 22px; padding-top: 12px; display: flex; justify-content: space-between; font-size: 10px; color: #66718d; }
+
+.brand-icon { border-radius: 11px; object-fit: contain; flex-shrink: 0; }
+a { color: #344aa3; }
