@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "description": "Synthetic controlled regression cases, split by entity. No fitted model or whole-web accuracy claim.",
+  "cases": [
+    { "split": "development", "entity": "Apache Dawnloom", "query": "Apache Dawnloom 官网", "scenario": "authority", "expected": "verified" },
+    { "split": "development", "entity": "Apache Quartznest", "query": "Apache Quartznest下载", "scenario": "authority", "expected": "verified" },
+    { "split": "development", "entity": "Fernlock", "query": "Fernlock 官网", "scenario": "self-claim", "expected": "unverified" },
+    { "split": "development", "entity": "Pineglass", "query": "Pineglass 使用教程", "scenario": "information", "expected": "not-navigation" },
+    { "split": "held-out", "entity": "Apache Rivermosaic", "query": "Apache Rivermosaic official website", "scenario": "authority", "expected": "verified" },
+    { "split": "held-out", "entity": "Apache Lanternmesh", "query": "Apache Lanternmesh 下载", "scenario": "authority", "expected": "verified" },
+    { "split": "held-out", "entity": "Apache Cedarwisp", "query": "Apache Cedarwisp", "scenario": "retired", "expected": "unverified" },
+    { "split": "held-out", "entity": "Apache Glassdelta", "query": "Apache Glassdelta 官网", "scenario": "mismatch", "expected": "unverified" },
+    { "split": "held-out", "entity": "Copperhaven", "query": "Copperhaven官网", "scenario": "self-claim", "expected": "unverified" },
+    { "split": "held-out", "entity": "Amberrelay", "query": "Amberrelay", "scenario": "ambiguous", "expected": "ambiguous" },
+    { "split": "held-out", "entity": "Willowkey", "query": "Willowkey", "scenario": "cached-offline", "expected": "cached" },
+    { "split": "held-out", "entity": "Silverharbor", "query": "如何使用 Silverharbor", "scenario": "information", "expected": "not-navigation" }
+  ]
+}

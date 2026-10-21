@@ -4,8 +4,9 @@ This is an independent project under AGPL-3.0-only. Read PROJECT_SPEC.md and
 IMPLEMENTATION_PLAN.md before implementing the next stage. Do not copy NameFirst
 or uBlacklist source, tests, data, icons, keys, or Git history into this repository.
 
-Use native ES modules. The stage-0 extension has no production dependency or remote
-code. Review and lock any later parsing or domain-policy dependency before use.
+Use native ES modules. The L1 core bundles the reviewed parsing/domain packages
+listed in DEPENDENCIES.md; keep all runtime code local. Review and lock any later
+dependency before use. See CORE_API.md for the current trust and integration boundary.
 Keep intent, discovery, evidence, verification, learning, storage, and search DOM
 adapters separate. Network transport belongs in the service worker.
 

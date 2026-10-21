@@ -4,7 +4,9 @@
 
 [简体中文](./README.md) · [Specification (Chinese)](./PROJECT_SPEC.md) · [Stage plan (Chinese)](./IMPLEMENTATION_PLAN.md) · [Privacy (Chinese)](./PRIVACY.md) · [AGPL-3.0](./LICENSE)
 
-**Current status: stage 0, a development baseline.** It provides an independent extension identity, optional HTTPS permissions, and a bounded background page-read experiment. Search-page integration, candidate discovery, official-identity verification, and active learning are not implemented yet. There is no published release or download package.
+**Current status: `0.1.0-stage1`, a development build.** The DOM-independent core now implements intent rules, discovery for unseen entity names, bounded networking, and evidence verification under a limited authority policy. Search-page integration and active-learning training are not implemented. The popup retains the stage-0 network experiment. There is no published release or download package.
+
+The current positive authority policy covers explicitly named entries in the Apache-maintained project directory. Wikidata provides discovery hints only. Actual Chrome/Edge core experiments verified Apache Arrow, preserved Rust's ambiguity, and left Zotero unverified. This is not universal official-site certification. See the [stage-1 report](./STAGE1_REPORT.md) and [core API](./CORE_API.md).
 
 The intended first release supports desktop Chrome and Edge with Bing and Baidu. It should not require an included entity catalog, user account, API key, paid API, or a maintained project backend. Network access and optional website permissions are required for live evidence collection.
 
@@ -18,6 +20,7 @@ Use Node.js 24+ and pnpm 11.25.0:
 pnpm install --frozen-lockfile
 pnpm check
 pnpm test
+pnpm evaluate
 pnpm build
 ```
 
@@ -25,9 +28,11 @@ Open `chrome://extensions` or `edge://extensions`, enable developer mode, and lo
 
 Open the extension popup, enable optional network access if desired, and enter a public HTTPS page URL. The current probe checks readability only. **It does not verify official identity.** Revoke access with the popup button. Redirects, query parameters, fragments, local/IP addresses, non-HTML responses, and pages over 256 KiB are unsupported by this stage-0 experiment.
 
-The stage-0 runtime includes no third-party libraries or remote scripts. Playwright is a development dependency only. `pnpm test:browser` uses isolated browser profiles. `node scripts/browser-smoke.mjs --live` additionally attempts online checks; browser executable overrides are `NAMEFIRST_PRO_CHROME` and `NAMEFIRST_PRO_EDGE`.
+The stage-1 core bundles local parsing/domain libraries and retains their licenses; see [dependencies](./DEPENDENCIES.md). It does not load remote scripts. Playwright and esbuild are development tools. `pnpm test:browser` checks the baseline; `pnpm test:core-browser` checks the compiled core using isolated profiles. Browser executable overrides are `NAMEFIRST_PRO_CHROME` and `NAMEFIRST_PRO_EDGE`.
 
-See the [baseline report](./BASELINE_REPORT.md) for actual verification results. The next stage implements DOM-independent intent, candidate discovery, and evidence policy. Additional documentation languages and complete user packages are planned for the release stage.
+Use `node scripts/resolve.mjs 'Apache Arrow official website' --live` for the Node-network core demo, or `node scripts/core-browser-smoke.mjs --live --target=chrome` for a separate browser test harness. The latter grants HTTPS access only to a test copy; it is not the production search flow. Failed networking or insufficient evidence must remain blocked/unverified. `pnpm evaluate` runs synthetic entity-disjoint regression cases; its results do not estimate whole-web accuracy.
+
+The next stage connects the core to Bing queries, background tasks, and visible evidence cards. Additional documentation languages and complete user packages are planned for the release stage. The [baseline report](./BASELINE_REPORT.md) remains a historical stage-0 record.
 
 ## License and contributions
 
