@@ -1,23 +1,25 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-import { readBingPage } from './bing-adapter.js';
-import { SEARCH_PORT, bingContext } from './protocol.js';
+import { readSearchPage } from './adapters.js';
+import { SEARCH_PORT, searchContext, engineEnabled } from './protocol.js';
 import { createCard } from './card.js';
 import stylesheet from './card.css';
 
-if (window.top === window && !globalThis.__namefirstProBingBootstrapped) {
-  globalThis.__namefirstProBingBootstrapped = true;
+if (window.top === window && !globalThis.__namefirstProSearchBootstrapped) {
+  globalThis.__namefirstProSearchBootstrapped = true;
   let current = null;
   let view = null;
   let port = null;
   let generation = 0;
   let stateRead = 0;
   let hidden = false;
+  let hiddenFor = null;
   let confirmed = false;
   let completed = null;
   let displayAllowed = false;
   let scheduled;
   let interval;
   let lastUrl = location.href;
+  const contextKey = (context) => context ? `${context.engine}:${context.query}` : null;
 
   function stop() {
     generation++;
@@ -52,10 +54,11 @@ if (window.top === window && !globalThis.__namefirstProBingBootstrapped) {
     view.pending('intent', current.query);
     channel.onMessage.addListener((message) => {
       if (token !== generation || channel !== port || hidden) return;
-      if (bingContext(location.href)?.query !== current?.query) { stop(); reconcile(); return; }
+      const live = searchContext(location.href);
+      if (live?.engine !== current?.engine || live?.query !== current?.query) { stop(); reconcile(); return; }
       if (message.type === 'STATE') {
-        if (message.query !== current.query) { stop(); blocked('search-context-changed'); return; }
-        if (!message.state.enabled || !message.state.bingEnabled || !message.state.networkAllowed) { stop(); void refreshState(true); return; }
+        if (message.engine !== current.engine || message.query !== current.query) { stop(); blocked('search-context-changed'); return; }
+        if (!engineEnabled(message.state, current.engine) || !message.state.networkAllowed) { stop(); void refreshState(true); return; }
         if (!sent) { sent = true; channel.postMessage({ type: 'RESOLVE', requestId, candidates: current.candidates }); }
       } else if (message.type === 'PROGRESS' && message.requestId === requestId) view.pending(message.stage, current.query);
       else if (message.type === 'RESULT' && message.requestId === requestId) {
@@ -90,7 +93,7 @@ if (window.top === window && !globalThis.__namefirstProBingBootstrapped) {
     if (read !== stateRead || current?.query !== query || hidden) return;
     if (!response?.ok) { stop(); blocked('backend-disconnected'); return; }
     const state = response.data;
-    if (!state.enabled || !state.bingEnabled) { displayAllowed = false; stop(); completed = null; view.remove(); return; }
+    if (!engineEnabled(state, current.engine)) { displayAllowed = false; stop(); completed = null; view.remove(); return; }
     displayAllowed = true;
     mount();
     if (!state.networkAllowed) { stop(); completed = null; view.permission(); return; }
@@ -103,20 +106,24 @@ if (window.top === window && !globalThis.__namefirstProBingBootstrapped) {
     startTask();
   }
   function reconcile() {
-    const page = readBingPage(document, location);
-    if (!page) { stop(); stateRead++; view?.remove(); view = null; current = null; completed = null; displayAllowed = false; return; }
-    if (current?.query === page.query) { current = page; if (completed?.status !== 'not-navigation') mount(); return; }
+    const page = readSearchPage(document, location);
+    if (!page) {
+      if (contextKey(searchContext(location.href)) !== hiddenFor) hiddenFor = null;
+      stop(); stateRead++; view?.remove(); view = null; current = null; completed = null; displayAllowed = false; return;
+    }
+    if (current?.engine === page.engine && current?.query === page.query) { current = page; if (completed?.status !== 'not-navigation') mount(); return; }
     stop(); stateRead++;
     view?.remove();
-    current = page; completed = null; hidden = false; confirmed = false; displayAllowed = false;
+    current = page; completed = null; hidden = hiddenFor === contextKey(page); confirmed = false; displayAllowed = false;
+    if (!hidden) hiddenFor = null;
     if (page.intent.kind === 'informational') { view = null; return; }
     view = createCard(document, stylesheet, {
       retry: () => { stop(); completed = null; hidden = false; void refreshState(); },
-      hide: () => { hidden = true; stop(); view.remove(); },
+      hide: () => { hidden = true; hiddenFor = contextKey(current); stop(); view.remove(); },
       settings: openSettings,
-      pause: () => { stop(); completed = null; displayAllowed = false; view.remove(); performAction('PAUSE_BING'); },
+      pause: () => { stop(); completed = null; displayAllowed = false; view.remove(); performAction('PAUSE_ENGINE'); },
       confirm: () => { confirmed = true; completed = null; void refreshState(); },
-    });
+    }, { engine: page.engine });
     mount();
     view.pending('intent', page.query);
     void refreshState();
@@ -128,7 +135,7 @@ if (window.top === window && !globalThis.__namefirstProBingBootstrapped) {
     schedule();
   });
   function watch() {
-    observer.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+    observer.observe(document.documentElement, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['class', 'style', 'hidden'] });
     clearInterval(interval);
     interval = setInterval(() => { if (location.href !== lastUrl) { lastUrl = location.href; reconcile(); } }, 500);
     reconcile();
@@ -141,6 +148,7 @@ if (window.top === window && !globalThis.__namefirstProBingBootstrapped) {
   });
   window.addEventListener('popstate', schedule);
   window.addEventListener('hashchange', schedule);
+  window.addEventListener('load', schedule, true);
   window.addEventListener('pagehide', () => { stop(); observer.disconnect(); clearInterval(interval); clearTimeout(scheduled); stateRead++; });
   window.addEventListener('pageshow', (event) => { if (event.persisted) { current = null; view?.remove(); view = null; completed = null; watch(); } });
   watch();

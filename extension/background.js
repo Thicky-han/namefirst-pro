@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 import { probePage } from './core/probe.js';
 import { publicHttpsUrl } from './core/public-url.js';
-import { BING_MATCHES, searchSender } from './search/protocol.js';
+import { SEARCH_MATCHES, searchSender } from './search/protocol.js';
 import { createSearchService } from './search/service.js';
 import { SETTINGS_KEY, readSettings, settingsPatch } from './search/settings.js';
 
@@ -11,7 +11,7 @@ let settingsWrite = Promise.resolve();
 
 async function getState() {
   const settings = readSettings((await chrome.storage.local.get(SETTINGS_KEY))[SETTINGS_KEY]);
-  return { ...settings, stage: 2, version: chrome.runtime.getManifest().version_name, networkAllowed: await chrome.permissions.contains({ origins: ORIGINS }) };
+  return { ...settings, stage: 3, version: chrome.runtime.getManifest().version_name, networkAllowed: await chrome.permissions.contains({ origins: ORIGINS }) };
 }
 async function updateSettings(patch) {
   const validated = settingsPatch(patch);
@@ -27,10 +27,10 @@ const service = createSearchService({
   extensionId: chrome.runtime.id, getState,
   getTabUrl: async (tabId) => (await chrome.tabs.get(tabId)).url,
   openSettings: () => chrome.tabs.create({ url: chrome.runtime.getURL('popup.html') }),
-  pauseBing: () => updateSettings({ bingEnabled: false }),
+  pauseEngine: (engine) => updateSettings({ [`${engine}Enabled`]: false }),
 });
 async function broadcastState() {
-  const tabs = await chrome.tabs.query({ url: BING_MATCHES });
+  const tabs = await chrome.tabs.query({ url: SEARCH_MATCHES });
   await Promise.allSettled(tabs.map((tab) => chrome.tabs.sendMessage(tab.id, { type: 'NAMEFIRST_PRO_STATE_CHANGED' }, { frameId: 0 })));
 }
 function invalidate(reason) {

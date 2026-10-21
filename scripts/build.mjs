@@ -27,7 +27,7 @@ for (const browser of ['chrome', 'edge']) {
   for (const [entry, output] of [['background.js', 'background.js'], ['core/index.js', 'core/resolver.js']]) {
     await build({ entryPoints: [fileURLToPath(new URL(`extension/${entry}`, root))], outfile: fileURLToPath(new URL(output, destination)), bundle: true, platform: 'browser', format: 'esm', target: 'chrome120', legalComments: 'eof', sourcemap: false });
   }
-  await build({ entryPoints: [fileURLToPath(new URL('extension/search/content.js', root))], outfile: fileURLToPath(new URL('bing-content.js', destination)), bundle: true, platform: 'browser', format: 'iife', target: 'chrome120', loader: { '.css': 'text' }, legalComments: 'eof', sourcemap: false });
+  await build({ entryPoints: [fileURLToPath(new URL('extension/search/content.js', root))], outfile: fileURLToPath(new URL('search-content.js', destination)), bundle: true, platform: 'browser', format: 'iife', target: 'chrome120', loader: { '.css': 'text' }, legalComments: 'eof', sourcemap: false });
   writeFileSync(new URL('third-party-notices.txt', destination), thirdPartyNotices());
   const manifest = { ...base, key: identity.manifestKey, version: metadata.version.split('-')[0], version_name: metadata.version };
   writeFileSync(new URL('manifest.json', destination), `${JSON.stringify(manifest, null, 2)}\n`);

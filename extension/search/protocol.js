@@ -4,7 +4,10 @@ import { publicHttpsUrl } from '../core/public-url.js';
 
 export const BING_HOSTS = ['www.bing.com', 'cn.bing.com', 'bing.com'];
 export const BING_MATCHES = BING_HOSTS.map((host) => `https://${host}/search*`);
-export const SEARCH_PORT = 'namefirst-pro:bing:v1';
+export const BAIDU_HOSTS = ['www.baidu.com'];
+export const BAIDU_MATCHES = ['https://www.baidu.com/s*'];
+export const SEARCH_MATCHES = [...BING_MATCHES, ...BAIDU_MATCHES];
+export const SEARCH_PORT = 'namefirst-pro:search:v2';
 
 export function bingContext(input) {
   try {
@@ -14,13 +17,30 @@ export function bingContext(input) {
     const query = queries[0].trim();
     const intent = classifyIntent(query);
     if (intent.kind === 'invalid') return null;
-    return { url: url.href, query, intent };
+    return { engine: 'bing', url: url.href, query, intent };
   } catch { return null; }
 }
 
+export function baiduContext(input) {
+  try {
+    const url = new URL(input);
+    const queries = [...url.searchParams.getAll('wd'), ...url.searchParams.getAll('word')];
+    if (url.protocol !== 'https:' || !BAIDU_HOSTS.includes(url.hostname) || url.port || url.username || url.password || url.pathname !== '/s' || queries.length !== 1 || url.searchParams.get('tn') === 'news') return null;
+    const encoding = url.searchParams.get('ie');
+    if (encoding && !/^utf-?8$/iu.test(encoding)) return null;
+    const query = queries[0].trim();
+    const intent = classifyIntent(query);
+    if (intent.kind === 'invalid') return null;
+    return { engine: 'baidu', url: url.href, query, intent };
+  } catch { return null; }
+}
+
+export function searchContext(input) { return bingContext(input) || baiduContext(input); }
+export function engineEnabled(state, engine) { return state.enabled === true && ['bing', 'baidu'].includes(engine) && state[`${engine}Enabled`] === true; }
+
 export function searchSender(sender, extensionId) {
   if (sender?.id !== extensionId || sender.frameId !== 0 || !Number.isInteger(sender.tab?.id) || sender.tab.id < 0 || (sender.documentLifecycle && sender.documentLifecycle !== 'active')) return null;
-  return bingContext(sender.url);
+  return searchContext(sender.url);
 }
 
 export function titleMatchesEntity(title, entity) {
@@ -41,7 +61,7 @@ export function searchRequest(message, query) {
     if (!item || typeof item.title !== 'string' || item.title.length > 300 || !titleMatchesEntity(item.title, intent.entity)) continue;
     try {
       const url = publicHttpsUrl(item.url);
-      if (BING_HOSTS.includes(new URL(url).hostname) || seen.has(url)) continue;
+      if ([...BING_HOSTS, ...BAIDU_HOSTS].includes(new URL(url).hostname) || seen.has(url)) continue;
       seen.add(url);
       candidates.push({ url, title: item.title });
     } catch { /* Unsafe page hints do not become requests. */ }

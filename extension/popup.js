@@ -9,11 +9,13 @@ async function refresh() {
   const response = await chrome.runtime.sendMessage({ type: 'GET_STATE' });
   if (ticket !== refreshId) return;
   if (!response?.ok) throw new Error(response?.error || '无法连接插件后台。');
-  const { networkAllowed, version, enabled, bingEnabled } = response.data;
+  const { networkAllowed, version, enabled, bingEnabled, baiduEnabled } = response.data;
   document.querySelector('#enabled').checked = enabled;
   document.querySelector('#bing-enabled').checked = bingEnabled;
+  document.querySelector('#baidu-enabled').checked = baiduEnabled;
   document.querySelector('#enabled').disabled = false;
   document.querySelector('#bing-enabled').disabled = false;
+  document.querySelector('#baidu-enabled').disabled = false;
   document.querySelector('#permission').textContent = networkAllowed ? '已允许读取公开 HTTPS 网页' : '尚未开启联网权限';
   document.querySelector('#enable').disabled = networkAllowed;
   document.querySelector('#disable').disabled = !networkAllowed;
@@ -25,7 +27,7 @@ function showError(error) { output.textContent = error instanceof Error ? error.
 document.querySelector('#enable').addEventListener('click', async () => {
   try {
     const allowed = await chrome.permissions.request({ origins });
-    output.textContent = allowed ? '权限已开启。当前 Bing 搜索页会更新，也可以刷新后重新搜索。' : '你未授予权限。联网功能保持关闭。';
+    output.textContent = allowed ? '权限已开启。当前支持的搜索页会更新，也可以刷新后重新搜索。' : '你未授予权限。联网功能保持关闭。';
     await refresh();
   } catch (error) { showError(error); }
 });
@@ -51,7 +53,7 @@ document.querySelector('#probe').addEventListener('submit', async (event) => {
 chrome.permissions.onRemoved.addListener(() => { void refresh().catch(showError); });
 chrome.permissions.onAdded.addListener(() => { void refresh().catch(showError); });
 chrome.storage.onChanged.addListener(() => { void refresh().catch(showError); });
-for (const [selector, field] of [['#enabled', 'enabled'], ['#bing-enabled', 'bingEnabled']]) {
+for (const [selector, field] of [['#enabled', 'enabled'], ['#bing-enabled', 'bingEnabled'], ['#baidu-enabled', 'baiduEnabled']]) {
   document.querySelector(selector).addEventListener('change', async (event) => {
     refreshId++;
     try {

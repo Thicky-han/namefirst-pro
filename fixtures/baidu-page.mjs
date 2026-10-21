@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+import { escapeHtml } from './bing-page.mjs';
+
+export function baiduFixture(query) {
+  let results = '<div class="result c-container" data-original="one"><h3><a href="https://unrelated.example.org/">Original unrelated result</a></h3><p>Original description remains.</p></div>';
+  if (query === 'GhostTool') results = `<div class="result c-container"><h3><a href="https://ghost.example.org/">${escapeHtml('GhostTool <img src=x onerror="window.injected=true"> Official')}</a></h3></div>`;
+  if (query === 'WrappedTool') results = '<div class="result c-container" data-tuiguang="1" mu="https://advertisement.example.org/"><h3><a href="https://www.baidu.com/link?url=ad">WrappedTool Official Ad</a></h3></div><div class="result c-container" mu="https://wrapped.example.org/"><h3><a href="https://www.baidu.com/link?url=opaque-token">WrappedTool Website</a></h3></div><div class="result-op c-container"><h3><a href="https://www.baidu.com/link?url=another-token" data-landurl="https://wrapped2.example.org/">WrappedTool Another Page</a></h3></div><div class="c-container"><h3><a href="https://advertisement.example.org/">WrappedTool Promoted</a></h3><span class="c-ad-label">广告</span></div><div class="result" mu="https://127.0.0.1/"><h3><a href="https://www.baidu.com/link?url=unsafe">WrappedTool Unsafe Hint</a></h3></div>';
+  if (query === 'OpaqueTool') results = '<div class="result c-container"><h3><a href="https://www.baidu.com/link?url=opaque-token">OpaqueTool Official</a></h3><span class="c-showurl">https://guessing-is-not-evidence.example.org/</span></div>';
+  return `<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(query)}_百度搜索受控夹具</title><style>body{font:16px system-ui;margin:40px;background:white;color:#222}#content_left{max-width:760px}.result{padding:20px 0}h3{font-size:19px}#kw{width:600px;padding:12px}</style></head><body><form id="form"><input id="kw" name="wd" value="${escapeHtml(query)}"></form><main><div id="content_left">${results}</div></main></body></html>`;
+}

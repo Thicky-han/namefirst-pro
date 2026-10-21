@@ -24,8 +24,9 @@ const PURPOSE = { homepage: '官网主页', download: '下载入口', docs: '文
 const STAGES = { intent: '正在判断入口意图…', discovering: '正在发现候选与来源…', 'collecting-evidence': '正在读取候选并收集证据…', verifying: '正在核对主体与入口用途…', complete: '正在整理本次结果…' };
 const reasonText = (code) => REASONS[code] || (/^http-\d+$/u.test(code || '') ? `目标返回 HTTP ${code.slice(5)}，本次未完成核验。` : '本次证据尚不足以支持官方归属。');
 
-export function createCard(document, stylesheet, handlers) {
-  const host = document.createElement('li');
+export function createCard(document, stylesheet, handlers, { engine = 'bing' } = {}) {
+  const engineLabel = engine === 'baidu' ? '百度' : 'Bing';
+  const host = document.createElement(engine === 'baidu' ? 'div' : 'li');
   host.dataset.namefirstPro = 'card';
   host.id = 'namefirst-pro-card';
   host.style.listStyle = 'none';
@@ -43,7 +44,7 @@ export function createCard(document, stylesheet, handlers) {
   const article = make('article');
   article.setAttribute('aria-label', 'NameFirst Pro 入口核验');
   const header = make('header');
-  header.append(make('span', 'NameFirst Pro', 'brand'), make('span', '独立入口核验', 'tag'));
+  header.append(make('span', 'NameFirst Pro', 'brand'), make('span', `${engineLabel} · 独立入口核验`, 'tag'));
   const title = make('h2');
   title.setAttribute('aria-live', 'polite');
   const body = make('div');
@@ -55,7 +56,7 @@ export function createCard(document, stylesheet, handlers) {
     return node;
   };
   const retry = button('重新核验', handlers.retry);
-  controls.append(retry, button('隐藏本次', handlers.hide), button('暂停 Bing', handlers.pause), button('设置', handlers.settings));
+  controls.append(retry, button('隐藏本次', handlers.hide), button(`暂停 ${engineLabel}`, handlers.pause), button('设置', handlers.settings));
   article.append(header, title, body, controls);
   shadow.append(style, article);
 

@@ -1,6 +1,6 @@
 {
   "name": "namefirst-pro",
-  "version": "0.2.0-stage2",
+  "version": "0.3.0-stage3",
   "private": true,
   "description": "Independent, local-first browser extension for evidence-based official entry discovery.",
   "license": "AGPL-3.0-only",
@@ -17,6 +17,7 @@
     "test:browser": "node scripts/browser-smoke.mjs",
     "test:core-browser": "node scripts/core-browser-smoke.mjs",
     "test:bing-browser": "node scripts/bing-browser-smoke.mjs",
+    "test:search-browser": "node scripts/search-browser-smoke.mjs",
     "resolve": "node scripts/resolve.mjs",
     "evaluate": "node scripts/evaluate.mjs"
   },

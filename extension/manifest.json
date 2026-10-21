@@ -1,14 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "NameFirst Pro — Bing 预览",
+  "name": "NameFirst Pro — 双引擎预览",
   "version": "0.0.0",
-  "description": "在 Bing 网页搜索中现场发现候选、核对来源并显示证据。认证来源当前有限，证据不足时保留待核验。",
+  "description": "在 Bing 和百度网页搜索中现场发现候选、核对来源并显示证据。认证来源当前有限，证据不足时保留待核验。",
   "minimum_chrome_version": "120",
   "permissions": ["storage"],
-  "host_permissions": ["https://www.bing.com/*", "https://cn.bing.com/*", "https://bing.com/*"],
+  "host_permissions": ["https://www.bing.com/*", "https://cn.bing.com/*", "https://bing.com/*", "https://www.baidu.com/*"],
   "optional_host_permissions": ["https://*/*"],
-  "content_scripts": [{ "matches": ["https://www.bing.com/search*", "https://cn.bing.com/search*", "https://bing.com/search*"], "js": ["bing-content.js"], "run_at": "document_idle", "all_frames": false }],
+  "content_scripts": [{ "matches": ["https://www.bing.com/search*", "https://cn.bing.com/search*", "https://bing.com/search*", "https://www.baidu.com/s*"], "js": ["search-content.js"], "run_at": "document_idle", "all_frames": false }],
   "background": { "service_worker": "background.js", "type": "module" },
-  "action": { "default_title": "NameFirst Pro · Bing 实时核验", "default_popup": "popup.html" },
+  "action": { "default_title": "NameFirst Pro · 实时入口核验", "default_popup": "popup.html" },
   "content_security_policy": { "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'" }
 }

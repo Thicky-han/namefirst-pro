@@ -16,8 +16,8 @@ function result(context) {
   return { taskId: 'server-task', status: 'unverified', intent: { kind: 'navigation', entity: context.query, purpose: 'homepage' }, selected: null, checkedAt: null, completedAt: new Date().toISOString(), candidates: [], evidence: [], failures: [], metrics: { requests: 0, elapsedMs: 1 } };
 }
 function environment(operation) {
-  const env = { state: { enabled: true, bingEnabled: true, networkAllowed: true }, urls: new Map(), calls: [], time: 10000, opened: 0, paused: 0 };
-  env.service = createSearchService({ extensionId: 'extension', getState: async () => ({ ...env.state }), getTabUrl: async (id) => env.urls.get(id), openSettings: async () => { env.opened++; }, pauseBing: async () => { env.paused++; env.state.bingEnabled = false; }, now: () => env.time, resolverFactory: (options) => ({ resolve: async (context, task) => { env.calls.push({ context, task, options }); return operation ? operation(context, task) : result(context); } }) });
+  const env = { state: { enabled: true, bingEnabled: true, baiduEnabled: true, networkAllowed: true }, urls: new Map(), calls: [], time: 10000, opened: 0, paused: 0 };
+  env.service = createSearchService({ extensionId: 'extension', getState: async () => ({ ...env.state }), getTabUrl: async (id) => env.urls.get(id), openSettings: async () => { env.opened++; }, pauseEngine: async (engine) => { env.paused++; env.pausedEngine = engine; env.state[`${engine}Enabled`] = false; }, now: () => env.time, resolverFactory: (options) => ({ resolve: async (context, task) => { env.calls.push({ context, task, options }); return operation ? operation(context, task) : result(context); } }) });
   env.connect = (channel) => { env.urls.set(channel.sender.tab.id, channel.sender.url); env.service.connect(channel); };
   return env;
 }
@@ -121,6 +121,36 @@ test('the worker bounds total simultaneous search tasks', async () => {
 test('settings UI actions do not turn the search port into a fetch endpoint', async () => {
   const env = environment(); const channel = port(); env.connect(channel); await flush();
   channel.onMessage.fire({ type: 'OPEN_SETTINGS' }); await flush(); assert.equal(env.opened, 1); assert.equal(env.calls.length, 0);
-  const pause = port(); env.connect(pause); await flush(); pause.onMessage.fire({ type: 'PAUSE_BING' }); await flush();
+  const pause = port(); env.connect(pause); await flush(); pause.onMessage.fire({ type: 'PAUSE_ENGINE' }); await flush();
   assert.equal(env.paused, 1); assert.equal(env.state.bingEnabled, false);
+});
+test('Baidu uses the same resolver and its own switch regardless of the Bing switch', async () => {
+  const env = environment(); env.state.bingEnabled = false;
+  const channel = port('Apache Arrow', 1, { url: 'https://www.baidu.com/s?wd=Apache+Arrow' });
+  env.connect(channel); await flush(); channel.onMessage.fire(request()); await flush();
+  assert.equal(env.calls.length, 1); assert.equal(env.calls[0].context.query, 'Apache Arrow');
+  assert.equal(channel.messages.find((message) => message.type === 'STATE').engine, 'baidu');
+  env.state.baiduEnabled = false; env.time += 2000;
+  const disabled = port('Apache Arrow', 1, { url: 'https://www.baidu.com/s?wd=Apache+Arrow' });
+  env.connect(disabled); await flush(); disabled.onMessage.fire(request()); await flush(); assert.equal(env.calls.length, 1);
+});
+test('pause derives the engine from the browser sender and rejects page engine overrides', async () => {
+  const env = environment(); const channel = port('Rust', 1, { url: 'https://www.baidu.com/s?wd=Rust' });
+  env.connect(channel); await flush(); channel.onMessage.fire({ type: 'PAUSE_ENGINE' }); await flush();
+  assert.equal(env.pausedEngine, 'baidu'); assert.equal(env.state.bingEnabled, true);
+  const attacker = port(); env.connect(attacker); await flush(); attacker.onMessage.fire({ type: 'PAUSE_ENGINE', engine: 'baidu' }); await flush(); assert.equal(env.paused, 1);
+});
+test('cross-engine navigation cannot publish a late result from the previous engine', async () => {
+  let finish;
+  const env = environment((context) => new Promise((resolve) => { finish = () => resolve(result(context)); }));
+  const channel = port('Rust'); env.connect(channel); await flush(); channel.onMessage.fire(request()); await flush();
+  env.urls.set(1, 'https://www.baidu.com/s?wd=Rust'); finish(); await flush();
+  assert.equal(channel.messages.some((message) => message.type === 'RESULT'), false);
+});
+test('simultaneous starts share one global limit across both engines', async () => {
+  const env = environment(() => new Promise(() => {}));
+  const channels = [1, 2, 3, 4].map((id) => port('Rust', id, { url: id % 2 ? 'https://www.baidu.com/s?wd=Rust' : 'https://www.bing.com/search?q=Rust' }));
+  channels.forEach((channel) => env.connect(channel)); await flush(); channels.forEach((channel) => channel.onMessage.fire(request())); await flush();
+  assert.equal(env.calls.length, 3); assert.equal(channels.filter((channel) => channel.messages.some((message) => message.reason === 'too-many-search-tasks')).length, 1);
+  env.service.invalidate();
 });
