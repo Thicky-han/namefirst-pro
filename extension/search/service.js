@@ -2,7 +2,7 @@
 import { createResolver } from '../core/resolve.js';
 import { SEARCH_PORT, searchContext, engineEnabled, searchSender, searchRequest, publicResult } from './protocol.js';
 
-export function createSearchService({ extensionId, getState, getTabUrl, openSettings, pauseEngine, resolverFactory = createResolver, now = Date.now }) {
+export function createSearchService({ extensionId, getState, getTabUrl, openSettings, pauseEngine, learningContext, resolverFactory = createResolver, now = Date.now }) {
   const sessions = new Map();
   const rates = new Map();
   function close(session) {
@@ -52,7 +52,7 @@ export function createSearchService({ extensionId, getState, getTabUrl, openSett
           if (message?.type === 'OPEN_SETTINGS' || message?.type === 'PAUSE_ENGINE') {
             if (Object.keys(message).length !== 1) throw new Error('invalid-search-action');
             if (!await stillCurrent(session)) throw new Error('search-context-changed');
-            if (message.type === 'OPEN_SETTINGS') await openSettings();
+            if (message.type === 'OPEN_SETTINGS') await openSettings(session.tabId);
             else await pauseEngine(session.engine);
             post(session, { type: 'ACTION_DONE' }); close(session); return;
           }
@@ -63,10 +63,13 @@ export function createSearchService({ extensionId, getState, getTabUrl, openSett
           if (!await stillCurrent(session)) throw new Error('search-context-changed');
           const state = await getState();
           if (!engineEnabled(state, session.engine) || !state.networkAllowed) { post(session, { type: 'STATE', engine: session.engine, query: session.query, state }); close(session); return; }
+          const learned = learningContext ? await learningContext(session) : { host: {} };
+          if (learned.intent?.kind === 'uncertain') throw new Error('navigation-confirmation-required');
+          if (!await stillCurrent(session)) throw new Error('search-context-changed');
           if ([...sessions.values()].filter((item) => item.running && !item.controller.signal.aborted).length >= 3) throw new Error('too-many-search-tasks');
           rateLimit(tabId, session.query);
           session.running = true;
-          const resolver = resolverFactory({ networkAllowed: async () => {
+          const resolver = resolverFactory({ ...learned.host, networkAllowed: async () => {
             const current = await getState();
             return !session.controller.signal.aborted && engineEnabled(current, session.engine) && current.networkAllowed;
           } });

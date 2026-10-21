@@ -11,13 +11,13 @@ const PURPOSES = [
   ['homepage', /(?:的)?(?:官方网站|官方入口|官网|主页)$|(?:\s+|^)(?:official\s+(?:website|site)|homepage)$/iu],
 ];
 
-export function classifyIntent(query, { model } = {}) {
+export function classifyIntent(query, { model, feedbackLabel } = {}) {
   if (typeof query !== 'string' || query.length > 256 || /[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u202a-\u202e\u2060-\u206f]/u.test(query)) {
     return { kind: 'invalid', entity: '', purpose: 'homepage', reason: 'invalid-query' };
   }
   const text = query.normalize('NFKC').trim().replace(/\s+/gu, ' ');
   if (!text) return { kind: 'invalid', entity: '', purpose: 'homepage', reason: 'empty-query' };
-  if (INFORMATION.test(text)) return { kind: 'informational', entity: text, purpose: 'homepage', reason: 'explicit-information-intent' };
+  if (feedbackLabel === 'informational' || INFORMATION.test(text) && feedbackLabel !== 'navigation') return { kind: 'informational', entity: text, purpose: 'homepage', reason: feedbackLabel === 'informational' ? 'explicit-local-feedback' : 'explicit-information-intent' };
   let entity = text;
   let purpose = 'homepage';
   let explicit = false;
@@ -33,12 +33,14 @@ export function classifyIntent(query, { model } = {}) {
   const features = Object.freeze({ explicitNavigation: explicit, wordCount: entity.split(' ').length, characterCount: [...entity].length });
   let kind = explicit || (features.wordCount <= 5 && features.characterCount <= 64 && !/[?？!！：:]/u.test(entity)) ? 'navigation' : 'uncertain';
   let reason = explicit ? 'explicit-navigation-intent' : kind === 'navigation' ? 'unseen-name-eligible' : 'uncertain-query';
-  if (model?.predict && !explicit) {
-    const prediction = model.predict(features);
+  if (feedbackLabel === 'navigation') { kind = 'navigation'; reason = 'explicit-local-feedback'; }
+  else if (model?.predict && !explicit) {
+    const prediction = model.predict(features, { query: text });
+    if (prediction?.needsClarification === true) { kind = 'uncertain'; reason = 'local-model-uncertain'; }
     if (Number.isFinite(prediction?.navigationProbability) && prediction.navigationProbability >= 0 && prediction.navigationProbability <= 1) {
       if (prediction.navigationProbability >= 0.8) kind = 'navigation';
       else if (prediction.navigationProbability <= 0.2) kind = 'informational';
-      reason = 'local-model-decision';
+      reason = kind === 'uncertain' ? 'local-model-uncertain' : 'local-model-decision';
     }
   }
   return { kind, entity, normalizedEntity: normalizeName(entity), purpose, reason, features, needsClarification: kind === 'uncertain' };

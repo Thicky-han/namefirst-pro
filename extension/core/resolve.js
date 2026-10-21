@@ -5,12 +5,12 @@ import { collectPageCandidates, discoverApache, discoverWikidata, mergeCandidate
 import { createEvidenceLedger } from './evidence.js';
 import { verifyEvidence } from './verify.js';
 
-export function createResolver({ fetcher, networkAllowed = () => false, budget = {}, sources = { apache: true, wikidata: true }, model } = {}) {
+export function createResolver({ fetcher, networkAllowed = () => false, budget = {}, sources = { apache: true, wikidata: true }, model, feedbackLabel } = {}) {
   return {
     async resolve(context, { signal, onProgress = () => {} } = {}) {
       const taskId = crypto.randomUUID();
       const startedAt = new Date().toISOString();
-      const intent = classifyIntent(context?.query, { model });
+      const intent = classifyIntent(context?.query, { model, feedbackLabel });
       const failures = [];
       const evidence = [];
       let candidates = [];

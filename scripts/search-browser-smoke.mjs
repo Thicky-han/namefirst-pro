@@ -17,7 +17,7 @@ if (only && !['chrome', 'edge'].includes(only)) throw new Error('Unknown browser
 if (onlyEngine && !['bing', 'baidu'].includes(onlyEngine)) throw new Error('Unknown search engine');
 let engine;
 const engineConfig = () => engine === 'baidu' ? { root: '#content_left', result: '.result:not([data-tuiguang])', heading: 'h3', tag: 'div', input: '#kw', label: '百度', path: '/s', parameter: 'wd' } : { root: '#b_results', result: '.b_algo', heading: 'h2', tag: 'ol', input: '#sb_form_q', label: 'Bing', path: '/search', parameter: 'q' };
-const report = { version: '0.3.0-stage3', startedAt: new Date().toISOString(), live, results: [], limitation: 'Controlled tests use fixture HTTP responses. Privileged and live cases use a separate test manifest with installed HTTPS host permission; the real optional permission dialog is not automated.' };
+const report = { version: JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8')).version, startedAt: new Date().toISOString(), live, results: [], limitation: 'Controlled tests use fixture HTTP responses. Privileged and live cases use a separate test manifest with installed HTTPS host permission; the real optional permission dialog is not automated.' };
 const card = (page) => page.locator('#namefirst-pro-card article');
 const searchUrl = (query, selected = engine) => selected === 'baidu' ? `https://www.baidu.com/s?wd=${encodeURIComponent(query)}` : `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
 const original = (page) => page.locator(`${engineConfig().root} ${engineConfig().result}`);
@@ -104,10 +104,10 @@ for (const item of matrix) {
         await page.locator('#namefirst-pro-card').waitFor({ state: 'detached' });
         await settings.waitForFunction(() => !document.querySelector('#enabled').checked && !document.querySelector('#bing-enabled').checked);
         const response = await settings.evaluate(() => chrome.runtime.sendMessage({ type: 'GET_STATE' }));
-        assert.deepEqual({ version: response.data.version === '0.3.0-stage3', enabled: response.data.enabled, bingEnabled: response.data.bingEnabled, baiduEnabled: response.data.baiduEnabled }, { version: true, enabled: false, bingEnabled: false, baiduEnabled: true });
+        assert.deepEqual({ version: response.data.version === report.version, enabled: response.data.enabled, bingEnabled: response.data.bingEnabled, baiduEnabled: response.data.baiduEnabled }, { version: true, enabled: false, bingEnabled: false, baiduEnabled: true });
         await settings.locator('#enabled').check();
         const state = await settings.evaluate(() => chrome.storage.local.get('namefirstProSettings'));
-        assert.equal(state.namefirstProSettings.version, 2); assert.equal(state.namefirstProSettings.bingEnabled, false);
+        assert.equal(state.namefirstProSettings.version, 3); assert.equal(state.namefirstProSettings.bingEnabled, false);
       });
     } catch (error) {
       for (const page of plain.context.pages()) {
@@ -162,7 +162,7 @@ for (const item of matrix) {
       }
     } else {
       await check(target, 'official-entry-missing-from-original-results', async () => { await go(page, 'Apache Lumenforge'); assert.equal(await card(page).locator('a.primary').getAttribute('href'), 'https://lumenforge.example.org/'); assert.equal(await original(page).count(), 1); assert.equal(await page.locator(`${engineConfig().root} > :first-child`).getAttribute('id'), 'namefirst-pro-card'); assert.equal(await original(page).locator(engineConfig().heading).innerText(), 'Original unrelated result'); });
-      await check(target, 'evidence-links-and-safe-navigation', async () => { await card(page).locator('summary').click(); assert.equal(await card(page).locator('.evidence li').count(), 2); for (const link of await card(page).locator('a').all()) assert.equal(await link.getAttribute('rel'), 'noopener noreferrer'); assert.equal(new URL(page.url()).searchParams.get(engineConfig().parameter), 'Apache Lumenforge'); });
+      await check(target, 'evidence-links-and-safe-navigation', async () => { await card(page).locator('summary').filter({ hasText: '查看本次证据条目' }).click(); assert.equal(await card(page).locator('.evidence li').count(), 2); for (const link of await card(page).locator('a').all()) assert.equal(await link.getAttribute('rel'), 'noopener noreferrer'); assert.equal(new URL(page.url()).searchParams.get(engineConfig().parameter), 'Apache Lumenforge'); });
       await page.screenshot({ path: path.join(run, `${target}-${engine}-official-controlled.png`) });
       await check(target, 'typing-an-unsubmitted-query-does-not-search', async () => { const count = requests.filter((row) => row.source).length; await page.locator(engineConfig().input).fill('a private draft not submitted'); await delay(650); assert.equal(requests.filter((row) => row.source).length, count); assert.equal(await card(page).locator('a.primary').getAttribute('href'), 'https://lumenforge.example.org/'); });
       await check(target, 'dynamic-root-replacement-does-not-duplicate-or-refetch', async () => {
@@ -184,7 +184,7 @@ for (const item of matrix) {
         const count = requests.filter((row) => row.source).length;
         await go(page, 'Six Word Search Name With Uncertainty', 'uncertain'); await delay(500);
         assert.equal(requests.filter((row) => row.source).length, count);
-        await card(page).getByRole('button', { name: '按入口查询核验' }).click(); await waitState(page, 'unverified');
+        await card(page).getByRole('button', { name: '我在找入口', exact: true }).click(); await waitState(page, 'not-found');
         assert(requests.filter((row) => row.source).length > count);
       });
       await check(target, 'unverified-text-cannot-inject-markup', async () => { await go(page, 'GhostTool', 'unverified'); assert.equal(await card(page).locator('img').count(), 0); assert((await card(page).innerText()).includes('<img')); assert.equal(await page.evaluate(() => window.injected === true), false); });

@@ -28,6 +28,16 @@ button:hover { background: #ecf4ee; }
 button:disabled { opacity: .5; cursor: default; }
 .action { margin: 9px 0 4px; color: white; border-color: #2e644b; background: #2e644b; }
 .action:hover { background: #204b37; }
+.personal { margin: 12px 0; padding: 12px; background: #f3effa; border: 1px solid #d9cbea; border-radius: 9px; color: #4c386b; }
+.personal[hidden] { display: none; }
+.personal strong, .personal-link { display: block; }
+.personal-link { margin: 5px 0; }
+.feedback { border-top: 1px solid #dce6df; padding-top: 9px; }
+.feedback button { margin: 4px 5px 4px 0; }
+label { display: block; margin: 9px 0; font-size: 12px; }
+input { display: block; width: 100%; padding: 7px; border: 1px solid #aebfb3; border-radius: 6px; background: white; color: #243c30; }
+.feedback-notice { display: block; margin-top: 8px; font-size: 12px; }
+.feedback-notice button { margin-left: 7px; }
 :focus-visible { outline: 3px solid #84ac98; outline-offset: 2px; }
 @media (max-width: 620px) { article { padding: 14px; } h2 { font-size: 16px; } }
 @media (prefers-color-scheme: dark) {
@@ -37,4 +47,5 @@ button:disabled { opacity: .5; cursor: default; }
   .summary, .muted, .domain, .candidates p, .evidence span { color: #adc2b3; }
   .controls, .candidates li { border-color: #3b5143; }
   summary { color: #b7cfbd; }
+  .personal { background: #34273f; border-color: #776087; color: #e5d5f4; }
 }

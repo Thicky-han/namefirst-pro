@@ -33,8 +33,8 @@ test('Baidu hint fields do not grant authority or choose a query', () => {
   assert.throws(() => searchRequest({ ...message, engine: 'bing' }, 'GhostTool'));
 });
 test('L2 settings migrate without losing the global switch or Bing preference', () => {
-  assert.deepEqual(readSettings({ version: 1, enabled: false, bingEnabled: false }), { version: 2, enabled: false, bingEnabled: false, baiduEnabled: true });
-  assert.deepEqual(readSettings({ version: 2, enabled: true, bingEnabled: false, baiduEnabled: false }), { version: 2, enabled: true, bingEnabled: false, baiduEnabled: false });
+  assert.deepEqual(readSettings({ version: 1, enabled: false, bingEnabled: false }), { version: 3, enabled: false, bingEnabled: false, baiduEnabled: true, learningEnabled: true, promptsEnabled: true });
+  assert.deepEqual(readSettings({ version: 2, enabled: true, bingEnabled: false, baiduEnabled: false }), { version: 3, enabled: true, bingEnabled: false, baiduEnabled: false, learningEnabled: true, promptsEnabled: true });
   assert.equal(readSettings({ version: 2, enabled: true, bingEnabled: true }).enabled, false);
   assert.deepEqual(settingsPatch({ baiduEnabled: false }), { baiduEnabled: false });
   assert.equal(engineEnabled({ enabled: true, bingEnabled: false, baiduEnabled: true }, 'baidu'), true);

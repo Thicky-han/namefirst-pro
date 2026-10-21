@@ -1,6 +1,6 @@
-# 核心与搜索引擎集成接口
+# 核心、学习与搜索引擎集成接口
 
-适用版本：`0.3.0-stage3`。核心与 DOM 无关，Bing/百度适配共用后台与核验政策；百度正常在线验收待完成。以下核心接口延续 L1。
+适用版本：`0.4.0-stage4`。核心与 DOM 无关，Bing/百度适配共用后台与核验政策；百度正常在线验收待完成。以下核心接口延续 L1。
 
 ## 调用入口
 
@@ -34,7 +34,8 @@ const result = await runner.run({
 | `networkAllowed` | 可信宿主提供的权限查询函数 | 页面不能自行授权 |
 | `fetcher` | 原生 Fetch 签名，供后台和测试注入 | 页面不能替换实际传输或伪造响应 |
 | `sources` | 可信配置中的 `apache`、`wikidata` 开关 | 不从网页下载新的信任来源政策 |
-| `model.predict` | 未来本地意图模型接口 | 不能认证地址；L1 没有训练功能 |
+| `model.predict(features, { query })` | 可信本地增量模型，按需影响非明确规则的意图 | 不接受网页提供模型，不认证域名 |
+| `feedbackLabel` | 可信宿主当前明确标签 | 只纠正意图，不能提供官方证据 |
 
 不提供内置实体名单。名称归一化使用 Unicode NFKC、大小写与合理空白；保留有意义的标点，不把形似字符当成同一个名称。导航、下载、登录和文档用途分别保留，资料查询直接退出联网。
 
@@ -55,7 +56,7 @@ const result = await runner.run({
 | `not-found` | 本次来源与预算内没有符合过滤要求的候选，不代表没有官网 |
 | `cached` | 仅有历史线索且本次无法读取，未作当前认证 |
 
-个人目标和存储管理尚未实现，L1 不返回伪装成已认证的 `personal` 数据。
+个人目标由 L4 的学习/记忆层单独返回 `personal`，不混入核心 `VerificationResult` 的认证事实；完整管理与备份界面仍属 L5。
 
 ## 候选发现
 
@@ -96,7 +97,7 @@ HTML 最多 256 KiB，结构化 JSON 最多 2 MiB，个别 API 请求采用更�
 
 独立核心仍可通过 CLI 和临时扩展测试页调用；产品后台已通过下面的受限桥接向 Bing/百度提供任务。不能将调试页的权限测试配置用于正式分发。
 
-## L3 双引擎消息桥接
+## 双引擎消息桥接
 
 `extension/search/` 分为 `adapters`（按当前 URL 路由）、`bing-adapter` / `baidu-adapter`（读各引擎页面）、`content`（生命周期）、`protocol`（消息过滤）、`service`（后台任务）、`card`（文本渲染）和 `settings`（版本化开关）。网络仍只在后台的核心 transport 中发生。
 
@@ -117,4 +118,16 @@ HTML 最多 256 KiB，结构化 JSON 最多 2 MiB，个别 API 请求采用更�
 
 单次 `GET_SEARCH_STATE` 仅向合格搜索 frame 返回状态。`GET_STATE`、`SET_SETTINGS` 和阶段 0 的 `PROBE_PAGE` 只向确切受信 `popup.html` 开放；不能从搜索页调用诊断作为任意地址代理。
 
-本地只保存 `{ version: 2, enabled: boolean, bingEnabled: boolean, baiduEnabled: boolean }`，键为 `namefirstProSettings`；兼容读取 L2 版本 1 并保留旧偏好，修改后写版本 2。异常结构关闭功能。暂停所用引擎由后台从发送者与当前标签页推导，页面不能指定要暂停另一个引擎。无查询历史、证据缓存或学习标签。页面结果区重建时重挂已有卡片，不重新发出网络请求；资料查询不显示卡片，不确定查询先进行本次确认。结果区不存在或不可见时不取证；监听有限样式/可见性属性和资源加载事件，恢复可识别可见布局后再开始。本次隐藏在同查询结果区暂时消失/恢复后仍有效。
+开关结构为 `{ version: 3, enabled, bingEnabled, baiduEnabled, learningEnabled, promptsEnabled }`，五项均为 boolean，键为 `namefirstProSettings`；兼容读取 L2/L3 版本 1/2 并保留旧偏好，修改后写版本 3。异常结构关闭功能。暂停所用引擎由后台从发送者与当前标签页推导，页面不能指定要暂停另一个引擎。没有全部查询历史或证据缓存；明确标签/个人记录按下节独立保存。页面结果区重建时重挂已有卡片，不重新发出网络请求；资料查询不显示卡片，不确定查询先进行本次确认。结果区不存在或不可见时不取证；监听有限样式/可见性属性和资源加载事件，恢复可识别可见布局后再开始。本次隐藏在同查询结果区暂时消失/恢复后仍有效。
+
+## L4 本地视图与反馈
+
+`GET_SEARCH_VIEW` 仅向合格搜索 frame 返回当前浏览器查询的意图、单个个人目标、提示预算结论和短期 token。`GET_ACTIVE_VIEW` 仅供受信弹窗读取当前搜索页，或从卡片打开设置时对应的搜索页。普通资料查询也执行本地判断，默认不显示官网卡片。
+
+`LEARNING_ACTION { token, action }` 允许 `LABEL`、`SAVE_PERSONAL`、`REJECT_PERSONAL`、`UNDO` 和不持久化的 `CONFIRM_ONCE`。查询不由消息指定，标签只允许 navigation/informational；网址只写个人记录，不发起任意 URL 请求。训练向量、官方标记和模型对象不能从消息输入。写入前重新检查当前 tab 查询、来源及学习开关。整页加载清除旧令牌。
+
+`GET_LEARNING_SUMMARY` 返回有限计数/版本/最近一步撤销标识；`UNDO_LEARNING { id, revision }` 只供确切受信弹窗调用。所有数据写入在后台串行执行，旧撤销无法覆盖后续更改。`namefirstProLearning` 与官网证据分开存储，个人目标以 `status: personal` 返回，并且没有本次认证时间。
+
+后台在每次取证前取得可信学习上下文，将 `model` 和 `feedbackLabel` 注入 `createResolver`；未确认的不确定任务被拒绝启动，资料意图直接返回 `not-navigation`，不会因页面主动发 `RESOLVE` 而联网。模型/个人记录损坏时保留原数据，核心退回规则判断。认证仍必须满足原始来源及目标证据政策。
+
+更多 schema、特征、限频、容量、内部可移植边界及用户操作见 [LEARNING.md](./LEARNING.md)。备份/导入导出 UI 属于 L5。

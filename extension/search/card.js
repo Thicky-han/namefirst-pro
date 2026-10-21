@@ -18,6 +18,12 @@ const REASONS = {
   'too-many-search-tasks': '正在处理其他搜索，请稍后重新核验。',
   'search-context-changed': '搜索内容已变化，请核验当前查询。',
   'backend-disconnected': '后台连接中断，本次结果未完成。可点击重新核验。',
+  'navigation-confirmation-required': '入口意图仍不确定，可在设置中确认本次用途。',
+  'undo-conflict': '其他页面已有更新，请在设置中查看最新更改后撤销。',
+  'learning-capacity': '本地记录达到上限，本次没有覆盖已有数据。',
+  'learning-disabled': '本地意图学习已关闭，没有保存标签。',
+  'personal-alias-conflict': '这个别名已有其他个人目标，本次没有覆盖。',
+  'invalid-personal-name': '名称或别名格式不适合保存，请缩短并去除异常字符。',
 };
 const STATUS = { verified: '本次核验支持官方归属', unverified: '已找到候选，证据仍不足', ambiguous: '存在同名主体，请先区分', blocked: '本次核验未完成', 'not-found': '本次未发现可用入口', cached: '历史线索尚未完成本次复核', invalid: '查询暂不适合核验' };
 const PURPOSE = { homepage: '官网主页', download: '下载入口', docs: '文档入口', login: '登录入口' };
@@ -48,6 +54,9 @@ export function createCard(document, stylesheet, handlers, { engine = 'bing' } =
   const title = make('h2');
   title.setAttribute('aria-live', 'polite');
   const body = make('div');
+  const personalBox = make('section', undefined, 'personal');
+  personalBox.hidden = true;
+  const notice = make('output', undefined, 'feedback-notice'); notice.setAttribute('role', 'status');
   const controls = make('div', undefined, 'controls');
   const button = (label, action, className) => {
     const node = make('button', label, className);
@@ -57,7 +66,19 @@ export function createCard(document, stylesheet, handlers, { engine = 'bing' } =
   };
   const retry = button('重新核验', handlers.retry);
   controls.append(retry, button('隐藏本次', handlers.hide), button(`暂停 ${engineLabel}`, handlers.pause), button('设置', handlers.settings));
-  article.append(header, title, body, controls);
+  const feedback = make('details', undefined, 'feedback');
+  feedback.append(make('summary', '纠正意图或记住个人入口'));
+  const learningText = make('p', '明确反馈仅保存在本机；个人选择不会认证官方身份。', 'muted');
+  const navigation = button('我在找入口', () => handlers.label('navigation'));
+  const informational = button('这次查资料', () => handlers.label('informational'));
+  const form = make('form');
+  const urlLabel = make('label', '个人目标地址'); const urlInput = make('input'); urlInput.type = 'url'; urlInput.required = true; urlInput.placeholder = 'https://…'; urlInput.autocomplete = 'off'; urlLabel.append(urlInput);
+  const aliasLabel = make('label', '另一个名称或别名（可选）'); const aliasInput = make('input'); aliasInput.type = 'text'; aliasInput.maxLength = 128; aliasInput.autocomplete = 'off'; aliasLabel.append(aliasInput);
+  const save = make('button', '保存个人入口'); save.type = 'submit';
+  form.append(urlLabel, aliasLabel, save);
+  form.addEventListener('submit', (event) => { event.preventDefault(); if (event.isTrusted) handlers.save({ url: urlInput.value.trim(), alias: aliasInput.value.trim() }); });
+  feedback.append(learningText, navigation, informational, form);
+  article.append(header, personalBox, title, body, feedback, notice, controls);
   shadow.append(style, article);
 
   function reset(status, heading, busy = false) {
@@ -78,6 +99,7 @@ export function createCard(document, stylesheet, handlers, { engine = 'bing' } =
     } catch { return make('span', label, className); }
   }
   function formatTime(value) { const date = new Date(value); return Number.isFinite(date.getTime()) ? date.toLocaleString() : '时间未知'; }
+  function prefill(url) { urlInput.value = url; feedback.open = true; urlInput.focus(); }
   return {
     host,
     mount(root) { if (host.parentElement !== root || root.firstElementChild !== host) root.prepend(host); },
@@ -86,9 +108,22 @@ export function createCard(document, stylesheet, handlers, { engine = 'bing' } =
     permission() {
       reset('permission', '开启联网权限后，才能现场核验').append(make('p', 'NameFirst Pro 需要读取公开候选网页。未授权时不会访问这些网站。'), button('打开设置', handlers.settings, 'action'));
     },
-    clarify(query) {
-      reset('uncertain', '这次是在寻找网站入口吗？').append(make('p', `当前搜索：${query}`, 'summary'), button('按入口查询核验', handlers.confirm, 'action'));
+    context(value) {
+      navigation.disabled = informational.disabled = !value.learningEnabled || Boolean(value.error);
+      save.disabled = Boolean(value.error);
+      learningText.textContent = value.error ? '本地记录暂不可用，已有数据未覆盖；官方核验仍按原证据规则运行。' : value.learningEnabled ? '明确标签与通用特征仅保存在本机；个人选择不会认证官方身份。' : '本地意图学习已关闭；个人入口仍可单独保存。';
+      personalBox.replaceChildren(); personalBox.hidden = !value.personal;
+      if (value.personal) {
+        personalBox.dataset.status = 'personal';
+        personalBox.append(make('strong', '个人入口 · 未经官方认证'), link(value.personal.url, value.personal.name, 'personal-link'), make('span', new URL(value.personal.url).hostname, 'domain'), button('不再用于这个名称', handlers.reject));
+      }
     },
+    notice(message, undo) { notice.replaceChildren(make('span', message)); if (undo) notice.append(button('撤销这次更改', () => handlers.undo(undo))); },
+    clarify(query, learningEnabled = true) {
+      reset('uncertain', '这次是在寻找网站入口吗？').append(make('p', `当前搜索：${query}`, 'summary'), make('p', learningEnabled ? '选择入口或资料会保存本次明确标签，用于本地学习。跳过不会训练。' : '仅确认本次查询，不保存训练标签。', 'muted'), button('我在找入口', handlers.confirm, 'action'), button('这次查资料', () => handlers.label('informational')), button('跳过本次', handlers.skip));
+    },
+    information() { reset('feedback', '本次按资料查询处理').append(make('p', '保留原搜索结果，不开展官网取证。可撤销或纠正这次选择。')); },
+    quiet() { reset('uncertain', '意图仍待确认').append(make('p', '未自动取证。可展开下方操作或在设置中确认本次用途。')); },
     blocked(code) { reset('blocked', '本次核验未完成').append(make('p', reasonText(code))); },
     result(result) {
       reset(result.status, STATUS[result.status] || '本次核验未完成');
@@ -97,6 +132,7 @@ export function createCard(document, stylesheet, handlers, { engine = 'bing' } =
         const anchor = link(target.url, undefined, 'primary');
         anchor.append(make('strong', target.name || result.intent.entity), make('span', new URL(target.url).hostname, 'domain'));
         body.append(anchor, make('p', `${PURPOSE[target.purpose] || '入口'} · 核验时间：${formatTime(result.checkedAt)}`, 'summary'));
+        body.append(button('记为个人目标…', () => prefill(target.url)));
         body.append(make('p', '此结论依据下面的公开来源，不是软件安全或资质认证。', 'muted'));
       } else {
         const explanation = result.status === 'ambiguous' ? '多个主体使用相同名称，未自动选定唯一官网。' : result.status === 'not-found' ? '当前来源和预算内没有找到可用候选，不表示该主体没有官网。' : result.status === 'blocked' ? reasonText(result.reason || result.failures?.[0]?.code) : '以下地址仅为候选；搜索排名、网页自称和个人选择都不构成官方认证。';
@@ -106,6 +142,7 @@ export function createCard(document, stylesheet, handlers, { engine = 'bing' } =
           for (const candidate of result.candidates.slice(0, 3)) {
             const item = make('li');
             item.append(link(candidate.url, candidate.name || new URL(candidate.url).hostname), make('span', new URL(candidate.url).hostname, 'domain'), make('p', reasonText(candidate.reason)));
+            item.append(button('设为个人目标…', () => prefill(candidate.url)));
             list.append(item);
           }
           body.append(list);

@@ -13,7 +13,9 @@ if (window.top === window && !globalThis.__namefirstProSearchBootstrapped) {
   let stateRead = 0;
   let hidden = false;
   let hiddenFor = null;
-  let confirmed = false;
+  let localView = null;
+  let receipt = null;
+  let receiptText = '';
   let completed = null;
   let displayAllowed = false;
   let scheduled;
@@ -41,6 +43,22 @@ if (window.top === window && !globalThis.__namefirstProSearchBootstrapped) {
   }
   function openSettings() { performAction('OPEN_SETTINGS'); }
   function blocked(reason) { completed = { error: reason }; mount(); view?.blocked(reason); }
+  async function mutateLearning(action) {
+    if (!localView || !current) return;
+    const key = contextKey(current); const token = localView.token;
+    stop();
+    try {
+      const response = await chrome.runtime.sendMessage({ type: 'LEARNING_ACTION', token, action });
+      if (key !== contextKey(current)) return;
+      if (!response?.ok) throw new Error(response?.error || '本地更改未保存');
+      receipt = response.data;
+      receiptText = action.type === 'UNDO' ? '已撤销这次更改。' : action.type === 'LABEL' ? '已保存明确标签，未改变官方身份事实。' : action.type === 'CONFIRM_ONCE' ? '仅确认本次用途，没有保存标签。' : '已更新个人记录；个人入口不等于官方。';
+      completed = null; await refreshState(true);
+    } catch (error) {
+      if (key === contextKey(current)) view?.notice(`未保存：${error.message}`);
+    }
+  }
+  function label(value) { void mutateLearning({ type: 'LABEL', label: value }); }
   function startTask() {
     if (port || !current || hidden) return;
     const token = ++generation;
@@ -80,7 +98,7 @@ if (window.top === window && !globalThis.__namefirstProSearchBootstrapped) {
     });
   }
   async function refreshState(invalidate = false) {
-    if (!current || !view) return;
+    if (!current || !view || hidden) return;
     const read = ++stateRead;
     const query = current.query;
     if (invalidate) { stop(); completed = null; view.pending('intent', query); }
@@ -94,10 +112,35 @@ if (window.top === window && !globalThis.__namefirstProSearchBootstrapped) {
     if (!response?.ok) { stop(); blocked('backend-disconnected'); return; }
     const state = response.data;
     if (!engineEnabled(state, current.engine)) { displayAllowed = false; stop(); completed = null; view.remove(); return; }
-    displayAllowed = true;
-    mount();
+    let decision;
+    try {
+      const response = await chrome.runtime.sendMessage({ type: 'GET_SEARCH_VIEW' });
+      if (!response?.ok) throw new Error(response?.error || '后台连接中断');
+      decision = response.data;
+    } catch {
+      if (read === stateRead && current?.query === query) { displayAllowed = true; blocked('backend-disconnected'); }
+      return;
+    }
+    if (read !== stateRead || current?.query !== query || hidden) return;
+    if (!decision || decision.query !== query || decision.engine !== current.engine) { stop(); reconcile(); return; }
+    localView = decision;
+    view.context(decision);
+    if (receipt) view.notice(receiptText, receipt.undo);
+    if (decision.intent.kind === 'informational') {
+      stop(); completed = null; displayAllowed = Boolean(decision.personal || receipt);
+      if (displayAllowed) { mount(); view.information(); } else view.remove();
+      return;
+    }
+    if (decision.intent.kind === 'uncertain') {
+      stop(); displayAllowed = Boolean(decision.personal || receipt || decision.ask && decision.learningEnabled && decision.promptsEnabled);
+      if (!displayAllowed) { view.remove(); return; }
+      mount();
+      if (decision.ask && decision.learningEnabled && decision.promptsEnabled) view.clarify(query, decision.learningEnabled);
+      else view.quiet();
+      return;
+    }
+    displayAllowed = true; mount();
     if (!state.networkAllowed) { stop(); completed = null; view.permission(); return; }
-    if (current.intent.kind === 'uncertain' && !confirmed) { view.clarify(query); return; }
     if (completed) {
       if (completed.error) view.blocked(completed.error);
       else if (completed.status !== 'not-navigation') view.result(completed);
@@ -109,20 +152,24 @@ if (window.top === window && !globalThis.__namefirstProSearchBootstrapped) {
     const page = readSearchPage(document, location);
     if (!page) {
       if (contextKey(searchContext(location.href)) !== hiddenFor) hiddenFor = null;
-      stop(); stateRead++; view?.remove(); view = null; current = null; completed = null; displayAllowed = false; return;
+      stop(); stateRead++; view?.remove(); view = null; current = null; localView = null; completed = null; displayAllowed = false; return;
     }
     if (current?.engine === page.engine && current?.query === page.query) { current = page; if (completed?.status !== 'not-navigation') mount(); return; }
     stop(); stateRead++;
     view?.remove();
-    current = page; completed = null; hidden = hiddenFor === contextKey(page); confirmed = false; displayAllowed = false;
+    current = page; completed = null; hidden = hiddenFor === contextKey(page); displayAllowed = false; localView = null; receipt = null;
     if (!hidden) hiddenFor = null;
-    if (page.intent.kind === 'informational') { view = null; return; }
     view = createCard(document, stylesheet, {
       retry: () => { stop(); completed = null; hidden = false; void refreshState(); },
       hide: () => { hidden = true; hiddenFor = contextKey(current); stop(); view.remove(); },
       settings: openSettings,
       pause: () => { stop(); completed = null; displayAllowed = false; view.remove(); performAction('PAUSE_ENGINE'); },
-      confirm: () => { confirmed = true; completed = null; void refreshState(); },
+      confirm: () => { void mutateLearning(localView?.learningEnabled ? { type: 'LABEL', label: 'navigation' } : { type: 'CONFIRM_ONCE' }); },
+      label,
+      skip: () => { hidden = true; hiddenFor = contextKey(current); stop(); view.remove(); },
+      save: (value) => { void mutateLearning({ type: 'SAVE_PERSONAL', ...value }); },
+      reject: () => { void mutateLearning({ type: 'REJECT_PERSONAL' }); },
+      undo: (value) => { void mutateLearning({ type: 'UNDO', ...value }); },
     }, { engine: page.engine });
     mount();
     view.pending('intent', page.query);

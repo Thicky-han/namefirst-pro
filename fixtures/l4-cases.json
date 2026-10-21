@@ -1,0 +1,33 @@
+{
+  "kind": "synthetic-entity-disjoint-intent-evaluation",
+  "frozenBeforeFirstFit": true,
+  "trainingEntities": ["Asterbun", "Brimleaf", "Cinderfern", "Dovemint", "Emberplum", "Fennelark", "Glimmersprig", "Hazelrift"],
+  "trainingTemplates": [
+    {"template": "{entity} guide", "label": "informational"},
+    {"template": "{entity} pricing", "label": "informational"},
+    {"template": "{entity} portal", "label": "navigation"},
+    {"template": "{entity} launch", "label": "navigation"}
+  ],
+  "heldOut": [
+    {"entity":"Indigofinch","query":"Indigofinch guide","label":"informational"},
+    {"entity":"Juniperquill","query":"Juniperquill guide","label":"informational"},
+    {"entity":"Kestrelbay","query":"Kestrelbay pricing","label":"informational"},
+    {"entity":"Lavendercoil","query":"Lavendercoil pricing","label":"informational"},
+    {"entity":"Myrtlewing","query":"Myrtlewing alternatives","label":"informational"},
+    {"entity":"Nectarloom","query":"Nectarloom alternatives","label":"informational"},
+    {"entity":"Ochremoth","query":"Ochremoth 兼容","label":"informational"},
+    {"entity":"Pollenreed","query":"Pollenreed 兼容","label":"informational"},
+    {"entity":"Quartzbud","query":"Quartzbud portal","label":"navigation"},
+    {"entity":"Rosefinchkit","query":"Rosefinchkit portal","label":"navigation"},
+    {"entity":"Saffronkite","query":"Saffronkite launch","label":"navigation"},
+    {"entity":"Thistlebrook","query":"Thistlebrook launch","label":"navigation"},
+    {"entity":"Umberwren","query":"Umberwren","label":"navigation"},
+    {"entity":"Violetcairn","query":"Violetcairn","label":"navigation"},
+    {"entity":"Willowspark","query":"Willowspark","label":"navigation"},
+    {"entity":"Zephyrpetal","query":"Zephyrpetal","label":"navigation"},
+    {"entity":"Ambermarsh","query":"Ambermarsh 使用教程","label":"informational"},
+    {"entity":"Birchglade","query":"how to use Birchglade","label":"informational"},
+    {"entity":"Cloverharp","query":"Cloverharp 官网","label":"navigation"},
+    {"entity":"Deworchid","query":"Deworchid official website","label":"navigation"}
+  ]
+}
