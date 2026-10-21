@@ -1,0 +1,18 @@
+NameFirst Pro
+Copyright (c) 2026 NameFirst Pro contributors.
+SPDX-License-Identifier: AGPL-3.0-only
+
+Independent implementation. This repository is not a fork of NameFirst or
+uBlacklist and does not contain their source code, catalog, icons, tests, or keys.
+The predecessor's public feature requirements inform the product specification.
+
+The full GNU Affero General Public License version 3 text is in LICENSE.
+Canonical text: https://www.gnu.org/licenses/agpl-3.0.txt
+Text mirror maintained by SPDX:
+https://github.com/spdx/license-list-data/blob/main/text/AGPL-3.0-only.txt
+
+There are no third-party runtime libraries in the stage-0 extension.
+Development-only Playwright packages are locked in pnpm-lock.yaml and carry
+their own licenses. They are not copied into extension build outputs.
+Website names and URLs in test cases identify test inputs and are not an
+included verified official-site catalog. No affiliation is implied.

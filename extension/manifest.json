@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "NameFirst Pro — 开发基线",
+  "version": "0.0.0",
+  "description": "阶段 0：独立扩展与联网能力验证。尚未实现搜索页官网识别和认证。",
+  "minimum_chrome_version": "120",
+  "permissions": ["storage"],
+  "optional_host_permissions": ["https://*/*"],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "action": { "default_title": "NameFirst Pro · 阶段 0", "default_popup": "popup.html" },
+  "content_security_policy": { "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'" }
+}

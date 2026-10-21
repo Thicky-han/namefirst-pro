@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NameFirst Pro · 开发基线</title>
+  <link rel="stylesheet" href="popup.css">
+  <script type="module" src="popup.js"></script>
+</head>
+<body>
+  <main>
+    <header><span class="mark" aria-hidden="true">N<span>↗</span></span><div><h1>NameFirst <b>Pro</b></h1><p>名称优先 · 证据随行</p></div></header>
+    <p class="stage">阶段 0 / 独立扩展与联网验证</p>
+    <section aria-labelledby="current"><h2 id="current">构建基线已就绪</h2><p>此版本用于验证插件安装、权限与联网。搜索页官网发现、实时核验和主动学习将在后续阶段接入。</p></section>
+    <section aria-labelledby="network"><h2 id="network">联网权限</h2><p>开启后，可从你的网络读取公开 HTTPS 候选网页。这些网站会看到常规网络请求及 IP 地址；请求不携带登录凭据。</p>
+      <p id="permission" role="status">正在读取权限…</p>
+      <div class="actions"><button id="enable" type="button">开启联网核验权限</button><button id="disable" class="secondary" type="button">撤销权限</button></div>
+    </section>
+    <form id="probe"><label for="url">测试一个公开网页地址</label><input id="url" name="url" type="url" placeholder="https://…" autocomplete="off" spellcheck="false" required><p class="hint">仅测试页面可读取性，不证明官方身份。重定向、登录页面与大文件可能无法读取。</p><button id="run" type="submit">测试联网</button></form>
+    <output id="result" role="status" aria-live="polite"></output>
+    <footer><span id="version"></span><span>AGPL-3.0 · 本地运行</span></footer>
+  </main>
+</body>
+</html>
