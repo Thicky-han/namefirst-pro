@@ -118,7 +118,7 @@ HTML 最多 256 KiB，结构化 JSON 最多 2 MiB，个别 API 请求采用更�
 
 单次 `GET_SEARCH_STATE` 仅向合格搜索 frame 返回状态。`GET_STATE`、`SET_SETTINGS` 和阶段 0 的 `PROBE_PAGE` 只向确切受信 `popup.html` 开放；不能从搜索页调用诊断作为任意地址代理。
 
-开关结构为 `{ version: 3, enabled, bingEnabled, baiduEnabled, learningEnabled, promptsEnabled }`，五项均为 boolean，键为 `namefirstProSettings`；兼容读取 L2/L3 版本 1/2 并保留旧偏好，修改后写版本 3。异常结构关闭功能。暂停所用引擎由后台从发送者与当前标签页推导，页面不能指定要暂停另一个引擎。没有全部查询历史或证据缓存；明确标签/个人记录按下节独立保存。页面结果区重建时重挂已有卡片，不重新发出网络请求；资料查询不显示卡片，不确定查询先进行本次确认。结果区不存在或不可见时不取证；监听有限样式/可见性属性和资源加载事件，恢复可识别可见布局后再开始。本次隐藏在同查询结果区暂时消失/恢复后仍有效。
+开关结构为 `{ version: 3, enabled, bingEnabled, baiduEnabled, learningEnabled, promptsEnabled }`，五项均为 boolean，键为 `namefirstProSettings`；兼容读取 L2/L3 版本 1/2 并保留旧偏好，修改后写版本 3。异常结构关闭功能。暂停所用引擎由后台从发送者与当前标签页推导，页面不能指定要暂停另一个引擎。没有全部查询历史；L5 仅保存有界的成功核验历史摘要，始终标为 cached。明确标签/个人记录按下节独立保存。页面结果区重建时重挂已有卡片，不重新发出网络请求；资料查询不显示卡片，不确定查询先进行本次确认。结果区不存在或不可见时不取证；监听有限样式/可见性属性和资源加载事件，恢复可识别可见布局后再开始。本次隐藏在同查询结果区暂时消失/恢复后仍有效。
 
 ## L4 本地视图与反馈
 
@@ -126,8 +126,19 @@ HTML 最多 256 KiB，结构化 JSON 最多 2 MiB，个别 API 请求采用更�
 
 `LEARNING_ACTION { token, action }` 允许 `LABEL`、`SAVE_PERSONAL`、`REJECT_PERSONAL`、`UNDO` 和不持久化的 `CONFIRM_ONCE`。查询不由消息指定，标签只允许 navigation/informational；网址只写个人记录，不发起任意 URL 请求。训练向量、官方标记和模型对象不能从消息输入。写入前重新检查当前 tab 查询、来源及学习开关。整页加载清除旧令牌。
 
-`GET_LEARNING_SUMMARY` 返回有限计数/版本/最近一步撤销标识；`UNDO_LEARNING { id, revision }` 只供确切受信弹窗调用。所有数据写入在后台串行执行，旧撤销无法覆盖后续更改。`namefirstProLearning` 与官网证据分开存储，个人目标以 `status: personal` 返回，并且没有本次认证时间。
+`GET_LEARNING_SUMMARY` 返回有限计数/版本/最近一步撤销标识；`UNDO_LEARNING { id, revision }` 供确切受信弹窗和 L5 管理页调用。所有数据写入在后台串行执行，旧撤销无法覆盖后续更改。`namefirstProLearning` 与官网证据分开存储，个人目标以 `status: personal` 返回，并且没有本次认证时间。
 
 后台在每次取证前取得可信学习上下文，将 `model` 和 `feedbackLabel` 注入 `createResolver`；未确认的不确定任务被拒绝启动，资料意图直接返回 `not-navigation`，不会因页面主动发 `RESOLVE` 而联网。模型/个人记录损坏时保留原数据，核心退回规则判断。认证仍必须满足原始来源及目标证据政策。
 
-更多 schema、特征、限频、容量、内部可移植边界及用户操作见 [LEARNING.md](./LEARNING.md)。备份/导入导出 UI 属于 L5。
+更多 schema、特征、限频、容量、内部可移植边界及用户操作见 [LEARNING.md](./LEARNING.md)。L5 管理/迁移和历史摘要见下一节。
+
+
+## L5 管理与缓存边界
+
+仅确切受信 `manage.html` 可调用：`MANAGEMENT_SNAPSHOT`、`MANAGE_LEARNING {action}`、`EXPORT_BACKUP`、`PREVIEW_IMPORT {text,mode,revision}`、`COMMIT_IMPORT {token}`、`EXPORT_RECOVERY`、`DELETE_CACHE {revision,id}`、`UNDO_CACHE {id,revision}` 和 `REVERIFY_RECORD {kind,id,revision}`。管理页不继承弹窗的任意地址诊断、设置或当前查询反馈接口；搜索 frame 无权导出/导入、遍历或编辑全库。
+
+管理 action 限 `PUT_PERSONAL`、`RELABEL`、`DELETE_PERSONAL`、`DELETE_LABEL`、`DELETE_EXCLUSION`、`CLEAR`，字段逐项限制，数据交给同一学习存储队列，按 revision 拒绝并发覆盖。导入校验/预览结果保存在后台短期令牌中，提交只接收 token，不能替换已预览数据；有效 5 分钟/最多 16 份。所有导入内容仅能成为个人数据和标签。
+
+缓存结构版本 1 / 政策版本独立存储于 `namefirstProEvidenceCache`。搜索后台只把同主体同用途的缓存目标作为 `cacheCandidates` 地址线索，不反序列化成可信证据；原任务仍必须现场读取来源与目标。当前成功核验才能新增摘要，失败只能更新已有摘要的最近尝试，不能刷新 checkedAt。过期/政策变化仅改变历史说明，不跳过或放宽本次核验。
+
+`GET_SEARCH_VIEW` 附可选 `history`，状态固定 cached，显示旧时间/原因/来源。管理核验只能选择已存在的个人/缓存 ID；网址和预算不由消息指定，通过核心完整证据门槛，且提交摘要前再次检查记录版本和取消状态。管理最多 1 任务/每分钟 5 次，搜索最多 3 任务，各任务原 12 秒/6 请求/2 并发预算保留，扩展核验任务合计最多 4 个。单页诊断另限 1 请求。详细格式、限额、文件迁移及清理撤销见 [MANAGEMENT.md](./MANAGEMENT.md)。

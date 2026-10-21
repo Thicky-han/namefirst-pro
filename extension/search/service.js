@@ -2,7 +2,7 @@
 import { createResolver } from '../core/resolve.js';
 import { SEARCH_PORT, searchContext, engineEnabled, searchSender, searchRequest, publicResult } from './protocol.js';
 
-export function createSearchService({ extensionId, getState, getTabUrl, openSettings, pauseEngine, learningContext, resolverFactory = createResolver, now = Date.now }) {
+export function createSearchService({ extensionId, getState, getTabUrl, openSettings, pauseEngine, learningContext, historyFor, rememberResult, resolverFactory = createResolver, now = Date.now }) {
   const sessions = new Map();
   const rates = new Map();
   function close(session) {
@@ -73,11 +73,16 @@ export function createSearchService({ extensionId, getState, getTabUrl, openSett
             const current = await getState();
             return !session.controller.signal.aborted && engineEnabled(current, session.engine) && current.networkAllowed;
           } });
-          const result = await resolver.resolve(request.context, {
+          const history = historyFor ? await historyFor(learned.intent || searchContext(await getTabUrl(tabId))?.intent).catch(() => null) : null;
+          if (!await stillCurrent(session)) throw new Error('search-context-changed');
+          const result = await resolver.resolve({ ...request.context, ...(history ? { cacheCandidates: [{ url: history.url, title: history.name }] } : {}) }, {
             signal: session.controller.signal,
             onProgress: (event) => { if (!session.controller.signal.aborted && sessions.get(tabId) === session) post(session, { type: 'PROGRESS', requestId: request.requestId, stage: event.stage, taskId: event.taskId }); },
           });
-          if (await stillCurrent(session)) post(session, { type: 'RESULT', requestId: request.requestId, result: publicResult(result) });
+          if (await stillCurrent(session)) {
+            if (rememberResult) await rememberResult(result, { guard: () => stillCurrent(session) }).catch(() => {});
+            if (await stillCurrent(session)) post(session, { type: 'RESULT', requestId: request.requestId, result: publicResult(result) });
+          }
           close(session);
         })().catch((error) => {
           if (!session.controller.signal.aborted) post(session, { type: 'ERROR', requestId: session.requestId, reason: error.message });

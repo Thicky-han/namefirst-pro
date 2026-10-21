@@ -23,7 +23,7 @@ function dataOnly(value) {
   if (new Set(examples.map((row) => row.key)).size !== examples.length) throw new Error('learning-data-invalid');
   const bindings = new Set();
   const personal = value.personal.map((row) => {
-    if (!row || !/^[a-zA-Z0-9-]{8,80}$/u.test(row.id) || !PURPOSES.includes(row.purpose) || !Array.isArray(row.names) || !row.names.length || row.names.length > 5 || !integer(row.at)) throw new Error('learning-data-invalid');
+    if (!row || typeof row.id !== 'string' || !/^[a-zA-Z0-9-]{8,80}$/u.test(row.id) || !PURPOSES.includes(row.purpose) || !Array.isArray(row.names) || !row.names.length || row.names.length > 5 || !integer(row.at)) throw new Error('learning-data-invalid');
     const names = [...new Set(row.names.map(name))];
     for (const entry of names) { const key = JSON.stringify([entry, row.purpose]); if (bindings.has(key)) throw new Error('learning-data-invalid'); bindings.add(key); }
     return { id: row.id, names, purpose: row.purpose, url: publicHttpsUrl(row.url), at: row.at };
@@ -50,6 +50,10 @@ export function readLearning(value) {
   return output;
 }
 export function portableLearning(value) { const state = readLearning(value); return { schemaVersion: state.schemaVersion, modelVersion: state.modelVersion, ...dataOnly(state) }; }
+export function validatePortable(value) {
+  if (!value || value.schemaVersion !== 1 || value.modelVersion !== MODEL_VERSION) throw new Error('learning-version-unsupported');
+  return portableLearning({ ...empty(), ...dataOnly(value) });
+}
 export function summary(state) { return { revision: state.revision, modelVersion: MODEL_VERSION, labels: state.examples.length, navigation: state.examples.filter((row) => row.label === 'navigation').length, informational: state.examples.filter((row) => row.label === 'informational').length, personal: state.personal.length, exclusions: state.exclusions.length, undo: state.undo ? { id: state.undo.id, revision: state.undo.revision } : null }; }
 function personalFor(state, intent) {
   const canonical = normalizeName(intent.entity);
@@ -70,6 +74,37 @@ export function createLearningStore({ read, write, now = Date.now }) {
   async function save(state) { const valid = readLearning(state); await write(valid); return valid; }
   return {
     async inspect() { await queue.catch(() => {}); return summary(await load()); },
+    async snapshot() { await queue.catch(() => {}); const state = await load(); return { ...summary(state), data: portableLearning(state) }; },
+    manage(action) {
+      return serialized(async () => {
+        const state = await load();
+        if (!action || action.revision !== state.revision) throw new Error('management-conflict');
+        const before = dataOnly(state);
+        if (action.type === 'PUT_PERSONAL') {
+          const current = state.personal.find((row) => row.id === action.id);
+          if (action.id && !current) throw new Error('management-conflict');
+          const row = { id: current?.id || crypto.randomUUID(), names: action.names, purpose: action.purpose, url: action.url, at: now() };
+          state.personal = state.personal.filter((entry) => entry !== current); state.personal.push(row);
+        } else if (action.type === 'RELABEL') {
+          const row = state.examples.find((entry) => entry.key === action.key);
+          if (!row || !['navigation', 'informational'].includes(action.label)) throw new Error('invalid-training-label');
+          row.label = action.label; row.at = now();
+        } else if (action.type === 'DELETE_PERSONAL') state.personal = state.personal.filter((row) => row.id !== action.id);
+        else if (action.type === 'DELETE_LABEL') state.examples = state.examples.filter((row) => row.key !== action.key);
+        else if (action.type === 'DELETE_EXCLUSION') state.exclusions.splice(action.index, 1);
+        else if (action.type === 'CLEAR') {
+          if (!['examples', 'personal', 'exclusions', 'all'].includes(action.group)) throw new Error('invalid-learning-action');
+          for (const group of ['examples', 'personal', 'exclusions']) if (action.group === group || action.group === 'all') state[group] = [];
+        } else if (action.type === 'IMPORT') Object.assign(state, validatePortable(action.data));
+        else throw new Error('invalid-learning-action');
+        const data = dataOnly(state);
+        if (JSON.stringify(data) === JSON.stringify(before)) return summary(state);
+        Object.assign(state, data); state.revision++; state.undo = { id: crypto.randomUUID(), revision: state.revision, data: before };
+        const valid = readLearning(state);
+        await write(valid); modelCache = { revision: valid.revision, model: trainModel(valid.examples) };
+        return summary(valid);
+      });
+    },
     async context(query, settings, { prompt = false } = {}) {
       return serialized(async () => {
         const state = await load();

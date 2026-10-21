@@ -2,9 +2,9 @@
 
 **名称优先，现场取证。** 独立开发的浏览器扩展，目标是在百度/Bing 搜索时识别寻找官网的意图，为未知名称发现候选、实时核对证据，并通过明确反馈改进本地判断。
 
-[English](./README.en.md) · [项目说明](./PROJECT_SPEC.md) · [实施计划](./IMPLEMENTATION_PLAN.md) · [L4 报告](./STAGE4_REPORT.md) · [本地学习](./LEARNING.md) · [隐私](./PRIVACY.md) · [AGPL-3.0](./LICENSE)
+[English](./README.en.md) · [项目说明](./PROJECT_SPEC.md) · [实施计划](./IMPLEMENTATION_PLAN.md) · [L5 报告](./STAGE5_REPORT.md) · [数据管理](./MANAGEMENT.md) · [本地学习](./LEARNING.md) · [隐私](./PRIVACY.md) · [AGPL-3.0](./LICENSE)
 
-**当前为 `0.4.0-stage4` 本地学习开发预览。** 已实现明确反馈增量学习、个人网址/别名记忆、个人否定、单步撤销和跨重启保存；模型、个人选择和官方证据分开。Bing/百度共用实时核验，L3 的安全验证/结果区隐藏在线待验收项继续保留。管理与备份界面留待 L5，目前没有 GitHub 发行包。
+**当前为 `0.5.0-stage5` 管理与迁移开发预览。** 已实现实时证据核验、明确反馈学习、个人入口管理、JSON 备份预览/合并/替换、清空与撤销、历史证据及失效说明。按用户要求，正常在线搜索矩阵不再作为阶段门槛；既有实测结果仍按实际记录。目前没有 GitHub 发行包。
 
 目前只有 Apache 官方项目数据政策可提供正向认证；Wikidata 和网页自称仅提供线索。名称不必在安装包中预先收录，原结果缺少入口时仍可补充发现；证据不足会保留待核验，不能据此声称已经能够认证所有官网。
 
@@ -69,12 +69,12 @@ pnpm evaluate
 
 展开搜索卡片的“纠正意图或记住个人入口”，可给出明确标签，或输入个人网址与可选别名。个人入口标为“未经官方认证”，不会替换官方证据结论，也不会自动访问保存的目标。资料查询不显示卡片时，可从工具栏弹窗的“当前搜索”纠正。更改后可单步撤销；另一页面已有新更改时旧撤销会拒绝。
 
-只保存明确标签的查询指纹/通用特征，以及主动保存的个人名称和网址，不默认存全部搜索历史。提示最多每 5 分钟一次、UTC 日 3 次。容量和模型边界见 [本地学习说明](./LEARNING.md)。当前尚无备份界面，卸载会清除记录。
+只保存明确标签的查询指纹/通用特征，以及主动保存的个人名称和网址，不默认存全部搜索历史。提示最多每 5 分钟一次、UTC 日 3 次。容量和模型边界见 [本地学习说明](./LEARNING.md)。从工具栏打开数据管理页，可搜索、编辑、删除、清空、撤销及导出 JSON；跨 Chrome/Edge 选择备份、先预览再合并或替换。权限和开关不迁移，未知格式不覆盖数据；卸载前先备份。具体步骤见 [数据管理](./MANAGEMENT.md)。历史来源始终标为缓存，断网不会刷新旧核验时间。
 
 ## 验证与后续
 
 浏览器验收：`pnpm test:browser`，使用独立临时配置。可通过环境变量 `NAMEFIRST_PRO_CHROME` 和 `NAMEFIRST_PRO_EDGE` 指定浏览器程序；默认使用本机 Chrome/Edge。在线能力实验：`node scripts/browser-smoke.mjs --live`。在线实验使用单独授权的测试副本，不修改产品权限；不自动操作真实权限对话框，详见阶段报告。
 
-`pnpm test:search-browser` 检查 Chrome/Edge × Bing/百度受控矩阵；`pnpm test:bing-browser` 保留只跑 Bing 的兼容入口；`pnpm test:core-browser` 检查独立核心；`pnpm test:browser` 检查弹窗与权限边界。受控页面、真实在线结果及尚未自动化的权限提示分别记录在 [L3 报告](./STAGE3_REPORT.md)。[L2](./STAGE2_REPORT.md)、[L1](./STAGE1_REPORT.md)和[阶段 0](./BASELINE_REPORT.md)报告保留历史状态。新增 `pnpm evaluate:learning` 和 `pnpm test:learning-browser`。L4 结果见 [阶段报告](./STAGE4_REPORT.md)，包括实体隔离的合成评估、实际界面反馈及真实浏览器重启检查。下一阶段为 L5 管理、备份与体验；L3 在线待验收项不因 L4 通过而消失。
+`pnpm test:search-browser` 检查 Chrome/Edge × Bing/百度受控矩阵；`pnpm test:bing-browser` 保留只跑 Bing 的兼容入口；`pnpm test:core-browser` 检查独立核心；`pnpm test:browser` 检查弹窗与权限边界。受控页面、真实在线结果及尚未自动化的权限提示分别记录在 [L3 报告](./STAGE3_REPORT.md)。[L2](./STAGE2_REPORT.md)、[L1](./STAGE1_REPORT.md)和[阶段 0](./BASELINE_REPORT.md)报告保留历史状态。新增 `pnpm evaluate:learning` 和 `pnpm test:learning-browser`。L4 结果见 [阶段报告](./STAGE4_REPORT.md)，包括实体隔离的合成评估、实际界面反馈及真实浏览器重启检查。L5 管理、文件迁移、升级与缓存结果见 [L5 报告](./STAGE5_REPORT.md)。新增 `pnpm test:management-browser`、`pnpm benchmark:storage`。下一阶段为 L6 首版交付与发布材料；公开发布仍需最终确认。
 
 贡献见 [CONTRIBUTING.md](./CONTRIBUTING.md)。本项目原创代码采用 AGPL-3.0-only；第三方开发工具保留各自许可。完整许可为准，本 README 为简述。

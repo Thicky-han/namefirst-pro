@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>NameFirst Pro · 数据管理</title><link rel="stylesheet" href="manage.css"><script type="module" src="manage.js"></script></head>
+<body><main>
+  <header><div><p class="eyebrow">NAMEFIRST PRO</p><h1>数据留在你手里</h1><p>个人入口、本地学习与历史证据</p></div><a href="popup.html" target="_blank" rel="noopener">打开设置</a></header>
+  <output id="status" role="status" aria-live="polite">正在读取…</output>
+  <p id="stale" hidden>其他页面或核验任务更新了数据。刷新列表后检查草稿，再继续编辑。</p>
+  <div class="toolbar"><button id="refresh">刷新列表</button><button id="undo" disabled>撤销上次数据更改</button><button id="export">导出 JSON 备份</button><button id="recovery" class="secondary">导出原始恢复副本</button></div>
+  <p class="muted">备份含个人入口、明确标签与个人否定；含网址等私人内容，请妥善保存。权限、开关、历史证据与撤销记录不迁移。</p>
+  <p id="summary"></p>
+  <label class="search">搜索名称、网址、标签特征或哈希<input id="filter" type="search" autocomplete="off" maxlength="256" placeholder="筛选本地记录…"></label>
+  <section aria-labelledby="personal-title"><h2 id="personal-title">个人入口 <small>不等于官方认证</small></h2>
+    <form id="edit-form"><input id="edit-id" type="hidden"><div class="fields"><label>名称与别名（每行一个，最多 5 个）<textarea id="edit-names" required maxlength="644" rows="3" autocomplete="off"></textarea></label><label>用途<select id="edit-purpose"><option value="homepage">官网主页</option><option value="download">下载入口</option><option value="docs">文档入口</option><option value="login">登录入口</option></select></label><label>个人地址<input id="edit-url" type="url" required autocomplete="off" placeholder="https://…"></label></div><div class="toolbar"><button id="save" type="submit">保存个人入口</button><button id="cancel-edit" type="button" class="secondary">清除草稿</button><button id="adopt" type="button" class="secondary" hidden>已检查草稿，采用最新版本</button></div><p id="draft-note" class="muted"></p></form>
+    <div id="personal-list" class="records"></div>
+  </section>
+  <section aria-labelledby="labels-title"><h2 id="labels-title">明确意图标签</h2><p class="muted">为减少搜索历史，不保存原查询正文；按 SHA-256 键和通用特征管理。删除或纠正标签后会重建模型。</p><div id="labels-list" class="records"></div></section>
+  <section aria-labelledby="exclusions-title"><h2 id="exclusions-title">个人否定记录</h2><p class="muted">只阻止指定名称调用指定个人地址；不会拉黑网站或参与官方认证。</p><div id="exclusions-list" class="records"></div></section>
+  <section aria-labelledby="evidence-title"><h2 id="evidence-title">历史证据 <small>不是本次认证</small></h2><p class="muted">最多 24 条成功核验摘要，24 小时后标为过期；新成功记录写入时移除超过 7 天的旧条目。每次搜索仍发起现场核验。清理可撤销一次，后台重启后不保留缓存撤销副本。</p><div class="toolbar"><button id="clear-cache" class="secondary">清空历史证据</button><button id="undo-cache" class="secondary" disabled>撤销历史证据清理</button></div><div id="evidence-list" class="records"></div><output id="verification" role="status"></output></section>
+  <section aria-labelledby="backup-title"><h2 id="backup-title">从 JSON 恢复</h2><p>先预览，再确认。合并时保留本机冲突记录；替换会覆盖当前三类数据，支持撤销。未知版本不会写入。</p><label>选择备份文件（最多 512 KiB）<input id="import-file" type="file" accept=".json,application/json"></label><label>恢复方式<select id="import-mode"><option value="merge">合并 · 本机冲突优先</option><option value="replace">替换全部个人与学习数据</option></select></label><button id="preview">预览导入</button><div id="preview-result" hidden></div><button id="commit" hidden>确认导入这份预览</button></section>
+  <section aria-labelledby="clear-title"><h2 id="clear-title">清理数据</h2><label>清理范围<select id="clear-group"><option value="examples">学习标签</option><option value="personal">个人入口</option><option value="exclusions">个人否定</option><option value="all">以上三类全部</option></select></label><button id="clear" class="secondary">清空所选数据</button><p class="muted">清空与替换均只保留一步撤销；其他页面的新更改会取代这一步。原始恢复副本仅供保全未知或损坏数据，不作为正常备份导入。</p></section>
+  <footer>AGPL-3.0 · 无账号 · 无自动上传 · Chrome / Edge 手动迁移</footer>
+</main></body></html>

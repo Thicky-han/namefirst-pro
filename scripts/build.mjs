@@ -21,7 +21,7 @@ for (const browser of ['chrome', 'edge']) {
   rmSync(outputDirectory, { recursive: true, force: true });
   mkdirSync(destination, { recursive: true });
   // Copy only audited runtime files. No node_modules, source maps, or developer profiles.
-  for (const name of ['popup.html', 'popup.js', 'popup.css']) {
+  for (const name of ['popup.html', 'popup.js', 'popup.css', 'manage.html', 'manage.js', 'manage.css']) {
     cpSync(new URL(`extension/${name}`, root), new URL(name, destination), { recursive: true });
   }
   for (const [entry, output] of [['background.js', 'background.js'], ['core/index.js', 'core/resolver.js']]) {

@@ -56,6 +56,7 @@ export function createCard(document, stylesheet, handlers, { engine = 'bing' } =
   const body = make('div');
   const personalBox = make('section', undefined, 'personal');
   personalBox.hidden = true;
+  const historyBox = make('details', undefined, 'history'); historyBox.hidden = true;
   const notice = make('output', undefined, 'feedback-notice'); notice.setAttribute('role', 'status');
   const controls = make('div', undefined, 'controls');
   const button = (label, action, className) => {
@@ -78,7 +79,7 @@ export function createCard(document, stylesheet, handlers, { engine = 'bing' } =
   form.append(urlLabel, aliasLabel, save);
   form.addEventListener('submit', (event) => { event.preventDefault(); if (event.isTrusted) handlers.save({ url: urlInput.value.trim(), alias: aliasInput.value.trim() }); });
   feedback.append(learningText, navigation, informational, form);
-  article.append(header, personalBox, title, body, feedback, notice, controls);
+  article.append(header, personalBox, title, body, historyBox, feedback, notice, controls);
   shadow.append(style, article);
 
   function reset(status, heading, busy = false) {
@@ -113,6 +114,14 @@ export function createCard(document, stylesheet, handlers, { engine = 'bing' } =
       save.disabled = Boolean(value.error);
       learningText.textContent = value.error ? '本地记录暂不可用，已有数据未覆盖；官方核验仍按原证据规则运行。' : value.learningEnabled ? '明确标签与通用特征仅保存在本机；个人选择不会认证官方身份。' : '本地意图学习已关闭；个人入口仍可单独保存。';
       personalBox.replaceChildren(); personalBox.hidden = !value.personal;
+      historyBox.replaceChildren(); historyBox.hidden = !value.history;
+      if (value.history) {
+        const history = value.history;
+        const reason = { 'policy-changed': '证据政策变化', 'clock-changed': '设备时间变化', 'ttl-expired': '已超过 24 小时', 'refresh-incomplete': '最近复核未完成', 'requires-current-check': '仍需本次复核' }[history.reason];
+        historyBox.dataset.status = 'cached';
+        historyBox.append(make('summary', '历史证据摘要 · 不是本次认证'), link(history.url, history.name), make('p', `旧核验时间：${formatTime(history.checkedAt)} · ${reason || '需复核'}`));
+        for (const proof of history.evidence) historyBox.append(link(proof.sourceUrl, `旧来源 · ${new URL(proof.sourceUrl).hostname}`), make('p', `旧读取时间：${formatTime(proof.fetchedAt)}`));
+      }
       if (value.personal) {
         personalBox.dataset.status = 'personal';
         personalBox.append(make('strong', '个人入口 · 未经官方认证'), link(value.personal.url, value.personal.name, 'personal-link'), make('span', new URL(value.personal.url).hostname, 'domain'), button('不再用于这个名称', handlers.reject));
