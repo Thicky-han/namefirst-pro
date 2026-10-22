@@ -10,10 +10,18 @@ export const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
 export function run(program, args, options = {}) { const output = spawnSync(program, args, { cwd: root, encoding: 'utf8', maxBuffer: 20 * 1024 * 1024, ...options }); if (output.status !== 0) throw new Error(`${program} failed: ${output.stderr || output.stdout || output.error?.message}`); return output.stdout; }
 export function archive(request) { return JSON.parse(run(process.env.NAMEFIRST_PRO_PYTHON || 'python', ['-X', 'utf8', path.join(root, 'scripts/archive.py')], { input: JSON.stringify(request) })); }
 export function safeRelative(name) { assert(name && !name.includes('\\') && !name.includes(':') && !name.startsWith('/') && !name.split('/').includes('..') && !name.includes('\0'), 'Unsafe package path'); return name; }
-const banned = /(?:^|\/)(?:\.git|node_modules|dist|release|\.cache|legal\/private|test-results|playwright-report)(?:\/|$)|(?:^|\/)\.env(?:\.|$)|\.(?:pem|key|p12|pfx|crx|log|map)$/iu;
+export const banned = /(?:^|\/)(?:\.git|node_modules|dist|release|\.cache|legal\/private|test-results|playwright-report|__pycache__|profiles|[^/]+-profiles?)(?:\/|$)|(?:^|\/)\.env(?:\.|$)|\.(?:pem|key|p12|pfx|crx|log|map|pyc|tmp|bak|orig|swp|swo)$/iu;
+const contentRules = [
+  ['local absolute path', /(?<![A-Za-z0-9])[A-Za-z]:[\\/]+[^\s"'<>]+|(?:\/home\/|\/Users\/)[A-Za-z0-9_.-]+\//gu],
+  ['local absolute path', /(?<!\\)\\\\(?!\\)[A-Za-z0-9_.-]+\\(?!\\)[A-Za-z0-9_$.-]+|(?<!\\)\\\\\\\\(?!\\)[A-Za-z0-9_.-]+\\\\(?!\\)[A-Za-z0-9_$.-]+/gu],
+  ['possible secret', /-----BEGIN (?:RSA |EC |OPENSSH |DSA |ENCRYPTED )?PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}|(?:AKIA|ASIA)[A-Z0-9]{16}|AIza[A-Za-z0-9_-]{35}|xox[baprs]-[A-Za-z0-9-]{20,}|(?<![A-Za-z0-9_-])sk-(?:proj-|svcacct-)?[A-Za-z0-9_-]{32,}/gu],
+];
+export function contentFindings(text) {
+  return contentRules.flatMap(([kind, pattern]) => [...text.matchAll(pattern)].map((match) => ({ kind, line: text.slice(0, match.index).split('\n').length })));
+}
 export function scanText(text, name) {
-  assert(!/[A-Za-z]:[\\/]Users[\\/]|[A-Za-z]:[\\/]Github/u.test(text), `${name}: local absolute path`);
-  assert(!/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}/u.test(text), `${name}: possible secret`);
+  const finding = contentFindings(text)[0];
+  assert(!finding, `${name}:${finding?.line}: ${finding?.kind}`);
 }
 export function auditSource(files) {
   const resolvedRoot = realpathSync(root); const names = new Set(); const output = [];

@@ -6,8 +6,8 @@ Independent implementation. This repository is not a fork of NameFirst or
 uBlacklist and does not contain their source code, catalog, tests, keys, or Git ancestors.
 Brand exception: on 2026-10-21 the maintainer explicitly requested a refinement
 of the original NameFirst NF/upward-arrow artwork for Pro. The imagegen-derived
-proposal is pending approval, with provenance in assets/brand/README.md. Preview
-packages may display it for review. The upstream prohibition icon is not reused.
+blue artwork was approved on 2026-10-21, with provenance in assets/brand/README.md.
+The upstream prohibition icon is not reused.
 The Pro derivative is contributed under this project's AGPL-3.0-only terms; no
 rights over unrelated historical/third-party material or trademarks are claimed.
 The predecessor's public feature requirements inform the product specification.

@@ -1,14 +1,14 @@
 # Install, use, back up and update
 
-Version: local release candidate `1.0.0-rc.1`. The UI is Simplified Chinese. Nine translated READMEs do not imply nine UI locales. Public repository/download links will be established after the maintainer approves publication; there is no hosted download yet.
+Version: first stable version `1.0.0`. The UI is Simplified Chinese. Nine translated READMEs do not imply nine UI locales. Source: [GitHub repository](https://github.com/Thicky-han/namefirst-pro). Use the Releases page below to obtain packages. If `v1.0.0` is absent, final maintainer publication confirmation is still pending.
 
 ## Install a ready-to-load package
 
-1. From the local `release/1.0.0-rc.1/` directory, choose `namefirst-pro-1.0.0-rc.1-chrome.zip` for Chrome or `namefirst-pro-1.0.0-rc.1-edge.zip` for Edge. The source ZIP is for review/building, not extension installation.
+1. Open [GitHub Releases](https://github.com/Thicky-han/namefirst-pro/releases), find `v1.0.0`, expand Assets and choose (local review files: `release/1.0.0/`) `namefirst-pro-1.0.0-chrome.zip` for Chrome or `namefirst-pro-1.0.0-edge.zip` for Edge. The source ZIP is for review/building, not extension installation.
 2. Extract **all** files into a permanent folder. Do not load from inside the ZIP or delete the loaded folder.
 3. Open `chrome://extensions` or `edge://extensions`, enable Developer mode, and select Load unpacked.
-4. Select the extracted folder directly containing `manifest.json`. The installed candidate is named **NameFirst Pro — 双引擎预览**, version `1.0.0-rc.1`.
-5. Open the toolbar extension menu and optionally pin it. Candidate packages show a refined NameFirst NF/arrow PRO icon awaiting approval.
+4. Select the extracted folder directly containing `manifest.json`. The installed extension is named **NameFirst Pro**, version `1.0.0`.
+5. Open the toolbar extension menu and optionally pin it. The approved icon uses a blue NF tile, ice-blue arrow and pale-gold PRO mark.
 
 ## Start an evidence task
 
@@ -18,7 +18,7 @@ Search a normal desktop Bing/Baidu web page, e.g. `Apache Arrow official website
 
 Information searches normally remain normal search; intent errors remain possible. Use “这次查资料” to correct a result, or disable the feature. Ambiguous names are not resolved by ranking. HTTPS, titles, self-claims, model scores, and personal choices do not independently prove identity. Entry verification is not a security or legal qualification check.
 
-Supported URLs: HTTPS `/search` on `www.bing.com`, `cn.bing.com`, `bing.com`; UTF-8 `wd`/`word` at `www.baidu.com/s` in recognized desktop layouts. Mobile, image/news search and challenge pages are outside scope. CAPTCHA, login, rate limits, timeouts, and unrecognized/hidden result areas cause stopping or abstention. Nothing bypasses them. Normal live search acceptance is outside this stage by user instruction. See [evaluation](./EVALUATION.md).
+Supported URLs: HTTPS `/search` on `www.bing.com`, `cn.bing.com`, `bing.com`; UTF-8 `wd`/`word` at `www.baidu.com/s` in recognized desktop layouts. Mobile, image/news search and challenge pages are outside scope. CAPTCHA, login, rate limits, timeouts, and unrecognized/hidden result areas cause stopping or abstention. Nothing bypasses them. The full normal live-search matrix has not been accepted; controlled tests and historical online observations are recorded separately. See [evaluation](./EVALUATION.md).
 
 ## Feedback and local learning
 
@@ -44,4 +44,4 @@ The global switch stops cards/tasks; engines can be paused individually and exte
 
 Compare ZIPs against `SHA256SUMS` using `Get-FileHash -Algorithm SHA256 filename`, or maintainers can run `pnpm release:verify`. A checksum proves consistency, not security or website identity.
 
-The corresponding source archive includes original modules, brand proposal, lockfile, licenses, build/test/package scripts and public evaluation inputs; no profiles, credentials or personal backups. Building needs Node.js 24+, pnpm 11.25.0 and `pnpm install --frozen-lockfile`, `pnpm check`, `pnpm test`, `pnpm build`. Release packaging additionally needs Python 3.9+ and Git. End users of the ZIP need none of these tools, an account, or an API key.
+The corresponding source archive includes original modules, approved artwork, lockfile, licenses, build/test/package scripts and public evaluation inputs; no profiles, credentials or personal backups. Building needs Node.js 24+ and pnpm 11.25.0. Clone the repository or extract the source ZIP, enter the folder directly containing `package.json`, then run `pnpm install --frozen-lockfile`, `pnpm check`, `pnpm test`, `pnpm build`. Release packaging additionally needs Python 3.9+ and Git. End users of the ZIP need none of these tools, an account, or an API key.

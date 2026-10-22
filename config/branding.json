@@ -1,8 +1,9 @@
 {
   "version": 1,
-  "approval": "pending",
+  "approval": "approved",
+  "approvedAt": "2026-10-21",
   "master": "assets/brand/namefirst-pro-master.png",
-  "description": "Maintainer-requested refinement of the original NameFirst NF/upward-arrow mark; preview before approval.",
+  "description": "Maintainer-approved blue Pro refinement of the original NameFirst NF/upward-arrow mark.",
   "palette": {
     "tile": "#202455",
     "arrow": "#70d9ff",

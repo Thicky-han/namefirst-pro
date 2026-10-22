@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "NameFirst Pro — 双引擎预览",
+  "name": "NameFirst Pro",
   "version": "0.0.0",
   "description": "在 Bing 和百度网页搜索中现场发现候选、核对来源并显示证据。认证来源当前有限，证据不足时保留待核验。",
   "minimum_chrome_version": "120",

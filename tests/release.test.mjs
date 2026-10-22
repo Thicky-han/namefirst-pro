@@ -28,4 +28,15 @@ test('archive CRC and public-content scans catch corrupt files and sensitive tex
   assert.throws(() => archive({ mode: 'inspect', path: zip }), /CRC/u);
   assert.throws(() => scanText('ghp_' + 'x'.repeat(40), 'fixture'), /secret/u);
   assert.throws(() => scanText('C:' + '\\Users\\sample\\secret', 'fixture'), /absolute/u);
+  const drivePath = ['E:', 'private', 'config'].join(String.fromCharCode(92));
+  const sharePath = String.fromCharCode(92).repeat(2) + ['server', 'share', 'config'].join(String.fromCharCode(92));
+  for (const value of [drivePath, sharePath]) {
+    assert.throws(() => scanText(value, 'fixture'), /absolute/u);
+    assert.throws(() => scanText(JSON.stringify({ path: value }), 'fixture'), /absolute/u);
+  }
+  assert.throws(() => scanText('E:' + '/private/build/config', 'fixture'), /absolute/u);
+  assert.throws(() => scanText('/home' + '/sample/private', 'fixture'), /absolute/u);
+  assert.throws(() => scanText('AKIA' + 'X'.repeat(16), 'fixture'), /secret/u);
+  assert.throws(() => scanText('sk-proj-' + 'x'.repeat(48), 'fixture'), /secret/u);
+  assert.doesNotThrow(() => scanText('https://github.com/example/project and /search current-task-creates-bounded-historical-summary-with-sources', 'fixture'));
 });

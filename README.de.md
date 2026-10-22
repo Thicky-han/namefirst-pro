@@ -1,33 +1,66 @@
 # NameFirst Pro
 
-![Pro-Iconentwurf](./assets/brand/icon-128.png)
+![Blaues Pro-Icon](./assets/brand/icon-128.png)
 
-**Namen zuerst, Belege zum Suchzeitpunkt.** Unabhängige AGPL-3.0-only-Erweiterung für Desktop-Chrome/Edge und Bing/Baidu, kein Fork. `1.0.0-rc.1` ist ein lokaler Kandidat; Icon und Veröffentlichung warten auf Freigabe. Öffentliche Downloads gibt es noch nicht. Die Oberfläche ist vereinfachtes Chinesisch. Neun übersetzte READMEs bedeuten keine neun Oberflächensprachen.
+**Namen zuerst, Belege zum Suchzeitpunkt.** NameFirst Pro ist eine unabhängige Open-Source-Erweiterung für Chrome/Edge auf dem Desktop. Sie erkennt, ob eine Bing-/Baidu-Suche einen offiziellen Einstieg sucht, entdeckt Kandidaten auch für unbekannte Namen und prüft nach Ihrer Erlaubnis aktuelle öffentliche Belege. **AGPL-3.0-only** erlaubt unter ihren Bedingungen auch kommerzielle Nutzung.
 
 [简体中文](./README.md) · [繁體中文](./README.zh-TW.md) · [English](./README.en.md) · [日本語](./README.ja.md) · [한국어](./README.ko.md) · [Français](./README.fr.md) · [Deutsch](./README.de.md) · [Español](./README.es.md) · [Português](./README.pt-BR.md)
 
-## Installation und Nutzung
+**Erste Version: `1.0.0`, mit freigegebener blauer Gestaltung.** Pakete finden Sie unter den [offiziellen Releases](https://github.com/Thicky-han/namefirst-pro/releases). Fehlt dort noch `v1.0.0`, wartet die Veröffentlichung auf die abschließende Bestätigung des Maintainers und die Pakete sind noch nicht öffentlich. Das Quellcode-ZIP lässt sich nicht direkt installieren. **Die Oberfläche ist derzeit vereinfachtes Chinesisch**; neun übersetzte READMEs sind keine neun Oberflächensprachen.
 
-1. Unter `release/1.0.0-rc.1/` die ZIP mit Endung `chrome.zip` bzw. `edge.zip` wählen und vollständig in einen dauerhaften Ordner entpacken. `source.zip` enthält den zugehörigen Quellcode, nicht die ladbare Erweiterung.
-2. `chrome://extensions` oder `edge://extensions` öffnen, Entwicklermodus einschalten und den entpackten Ordner laden, der `manifest.json` direkt enthält.
-3. Im Erweiterungsfenster Gesamt-/Suchmaschinenschalter aktivieren. Bei Bedarf „开启联网核验权限“ wählen und den Browserhinweis lesen. Ohne Zustimmung werden keine externen Belege gelesen. Die Berechtigung ist widerrufbar.
-4. In der normalen Desktop-Websuche z. B. `Apache Arrow official website` suchen. Die eigene Karte zeigt Zustand, genaue Adresse, Quellen und Zeitpunkt. Bestehende Ergebnisse bleiben, keine automatische Weiterleitung.
-5. Informationssuchen mit „这次查资料“ korrigieren. Nur ausdrückliche Labels trainieren; Überspringen und Nichtklicken nicht. Persönliche Adressen/Aliasse/Ablehnungen sind von amtlicher Zuordnung getrennt und nicht zertifiziert.
-6. In der Verwaltung JSON exportieren. Im neuen Browser Datei auswählen, Zusammenführen/Ersetzen zunächst prüfen, dann bestätigen. Bei Konflikten bleiben lokale Einträge; unbekannte Formate überschreiben nichts. Berechtigungen, Einstellungen, Cache und Rückgängigzustand werden nicht übertragen.
-7. Vor Updates sichern, entpackte Dateien ersetzen, Erweiterung neu laden und Suchseiten aktualisieren. Nicht zuerst deinstallieren: dadurch werden lokale Daten gelöscht.
+## Funktionen
 
-Details: [englische Installation](./INSTALL.en.md), [Verwaltung](./MANAGEMENT.md), [Datenschutz](./PRIVACY.md). Bearbeiten, Löschen, ein Rückgängigschritt und Schutz konkurrierender Entwürfe sind vorhanden.
+- Bei jeder unterstützten Suche lokale Einschätzung: Einstieg gesucht, Informationssuche oder unklar. Namen müssen nicht vorab in einem Katalog stehen.
+- Für Navigationsaufgaben werden aktuelle Kandidaten und Belege innerhalb fester Grenzen gesammelt. Die Karte zeigt genaue URL, Zweck, Quellen, Zeitpunkt und Zustand. Fehlende Belege erlauben eine Enthaltung.
+- Die ursprünglichen Suchergebnisse bleiben erhalten. Keine automatische Weiterleitung, kein automatisches Herunterladen oder Ausführen.
+- Nur ausdrückliches Feedback trainiert das lokale Absichtsmodell. Persönliche URLs, Aliasse und Ausschlüsse sind von offizieller Zuordnung getrennt.
+- Bearbeiten, Löschen, Rückgängig für die letzte Änderung und JSON-Sicherungen mit Vorschau vor Zusammenführen/Ersetzen; manueller Umzug zwischen Chrome und Edge.
 
-## Umfang und Grenzen
+## Download und Installation
 
-Namen müssen nicht in einem installierten Katalog stehen. Die einzige positive Autoritätsregel unterstützt derzeit ausdrücklich genannte Start-/Downloadadressen im Apache-Projektverzeichnis. Wikidata liefert Hinweise. Rang, HTTPS, Selbstaussage, Modellwert oder persönliche Auswahl reichen nicht zur Bestätigung. Keine allgemeine Dokumentations-/Loginregel, keine Garantie für alle Websites, Software-Sicherheit oder Qualifikationen.
+Nutzer der fertigen ZIPs brauchen weder Node.js noch Konto, API-Schlüssel, Projektserver oder Kompilierung.
 
-Unterstützt werden erkannte Desktop-Layouts von Bing HTTPS `/search` und `www.baidu.com/s` mit UTF-8-Websuche. CAPTCHA, Login, versteckte/unbekannte Layouts, Begrenzung und Zeitüberschreitung führen zum Abbruch oder zur Enthaltung, ohne Umgehung. Normale Online-Abnahme ist auf Nutzerwunsch keine Stufenbedingung mehr. Lernen und Nachfragen lassen sich abschalten. Kein vollständiger Suchverlauf; historische Belege bleiben Cache, fehlgeschlagene Prüfungen erneuern ihre Zeit nicht.
+1. Unter [Releases](https://github.com/Thicky-han/namefirst-pro/releases) die offizielle Version `v1.0.0` öffnen. Für Chrome `namefirst-pro-1.0.0-chrome.zip`, für Edge `namefirst-pro-1.0.0-edge.zip` wählen. `namefirst-pro-1.0.0-source.zip` enthält den zugehörigen Quellcode.
+2. **Alle Dateien** in einen dauerhaft aufbewahrten Ordner entpacken. Nicht aus der ZIP laden und den Ordner nach Installation nicht löschen.
+3. `chrome://extensions` oder `edge://extensions` öffnen, den Entwicklermodus aktivieren und das Laden einer entpackten Erweiterung wählen.
+4. Den Ordner wählen, der **`manifest.json` direkt enthält**, nicht den übergeordneten Ordner. Prüfen, dass **NameFirst Pro** geladen ist; das blaue NF/PRO-Icon bei Bedarf an die Symbolleiste anheften.
+5. Im Erweiterungsfenster Gesamt- und gewünschte Suchmaschinenschalter einschalten. Für externe Belege „开启联网核验权限“ wählen, den Browserhinweis zum Zugriff auf HTTPS-Seiten lesen und zustimmen. Die Berechtigung ist widerrufbar; vorher werden keine externen Belege gelesen.
+6. In der normalen Desktop-Websuche von Bing/Baidu etwa `Apache Arrow official website` suchen. **Aktuellen Zustand, genauen Einstieg, Quellen und Zeitpunkt** lesen. Nur Belege dieser Aufgabe, die die Richtlinie erfüllen, stützen eine offizielle Zuordnung. Unbekannte Namen können ebenfalls untersucht werden, ohne Bestätigungsgarantie.
 
-[Auswertung](./EVALUATION.md): 36 manuell formulierte Anfragen mit echten Namen, trainiertes Modell 25 richtig, 6 Enthaltungen, 5 fälschlich gestartete Informationssuchen. 24 synthetische Vertrauensfälle, 23 erwartungsgemäße Zustände, 0 falsche unter 3 Bestätigungen. Ein Dokumentationsfall bleibt sicher unbestätigt und verfehlt das Ziel. Keine Schätzung für echte Nutzung oder das ganze Web.
+Mehr dazu in der [englischen Installationsanleitung](./INSTALL.en.md) oder [Anleitung auf vereinfachtem Chinesisch](./INSTALL.md).
+
+## Feedback, Sicherung und Aktualisierung
+
+Wird eine Informationssuche als Navigation behandelt, „这次查资料“ wählen. „我在找入口“ bedeutet, dass ein Einstieg gesucht wird. „仅本次按入口核验“ bestätigt nur diese Aufgabe, ohne Trainingslabel zu speichern. Überspringen oder Nichtklicken trainiert nicht. Lernen und Nachfragen lassen sich getrennt abschalten. Persönliche URLs bleiben als unbestätigt gekennzeichnet.
+
+Mit „管理记录、查看历史证据与备份迁移“ die Verwaltung öffnen und „导出 JSON 备份“ wählen. Im neuen Browser Datei und Zusammenführen/Ersetzen wählen, mit „预览导入“ erst Datensätze und Konflikte prüfen, dann bestätigen. Zusammenführen behält lokale Konfliktdatensätze; Ersetzen überschreibt persönliche und Lerndaten. Berechtigungen, Einstellungen, historische Belege und Rückgängigzustand werden nicht übertragen und sind separat einzurichten. Unbekannte/beschädigte Formate überschreiben nichts. Sicherungen enthalten selbst eingegebene Namen/URLs und sollten privat aufbewahrt werden.
+
+Vor Updates sichern, die neue Version vollständig entpacken und die geladenen Dateien ersetzen. In der Erweiterungsverwaltung neu laden, danach Such-Tabs aktualisieren. Bloßes Ersetzen auf dem Datenträger kann den alten Hintergrundprozess weiterlaufen lassen. **Nicht zuerst deinstallieren:** Das löscht lokale Daten. Dieselbe Erweiterungsidentität und dasselbe Profil bewahren sie normalerweise, ohne Garantie für alle künftigen Formate.
+
+Fehlt die Karte, unterstützte URL/Ansicht, Gesamt-/Suchmaschinenschalter und Tab-Aktualisierung nach Updates prüfen. Bei fehlgeschlagener Prüfung externe Berechtigung, Netzwerk und angezeigten Grund beachten. CAPTCHA, Anmeldung, Begrenzung und Zeitüberschreitung führen zu Abbruch oder Enthaltung; sie werden nicht umgangen. Suchmaschinen können pausiert und Berechtigungen widerrufen werden. [Verwaltungsdetails](./MANAGEMENT.md).
+
+## Umfang und Datenschutz
+
+Die einzige derzeit positive Autoritätsrichtlinie deckt ausdrücklich genannte **Start-/Downloadadressen** im von Apache gepflegten Projektverzeichnis ab. Wikidata liefert nur Hinweise. Rang, HTTPS, Selbstaussage, Modellwert oder persönliche Auswahl beweisen allein keine offizielle Identität. Es gibt keine allgemeine Dokumentations-/Loginrichtlinie und keine Garantie für das ganze Web, Softwaresicherheit oder rechtliche Qualifikationen.
+
+Unterstützt werden erkannte Desktop-Ansichten von Bing HTTPS `/search` (`www.bing.com`, `cn.bing.com`, `bing.com`) sowie `www.baidu.com/s` mit UTF-8-Websuche. Mobilansichten, Bilder/Nachrichten und versteckte/unbekannte Layouts liegen außerhalb des Umfangs. Auf Wunsch des Maintainers gehört die reguläre reale Online-Abnahme nicht zu dieser Stufenbedingung; kontrollierte Browsertests und historische Online-Beobachtungen werden getrennt ausgewiesen.
+
+Keine Telemetrie, kein fernes Training, kein automatisches Hochladen von Feedback und kein vollständiger Suchverlauf. Ausdrückliche Labels und persönliche Datensätze bleiben lokal. Nach Freigabe können besuchte Seiten IP und angeforderte URL sehen; ergänzende Suche kann zugehörige Namen an Suchmaschinen senden. Die Nutzung ist daher weder vollständig offline noch im Netzwerk anonym. Alte Belege bleiben Cache; fehlgeschlagene Aktualisierung erneuert ihren Zeitpunkt nicht. Jede Navigationsaufgabe sammelt aktuelle Belege. [Datenschutz](./PRIVACY.md) · [Lernen](./LEARNING.md).
+
+[Öffentliche Auswertung](./EVALUATION.md): Bei 36 manuell formulierten Anfragen mit echten Softwarenamen lag das bestehende trainierte Modell 25-mal richtig, enthielt sich 6-mal und löste bei 5 Informationssuchen fälschlich eine Navigation aus. In 24 synthetischen Vertrauensfällen entsprachen 23 dem erwarteten Zustand; keine der 3 Bestätigungen war falsch. Ein Dokumentationsfall blieb sicher unbestätigt und verfehlte das Funktionsziel. Das ist keine Stichprobe echter Nutzer und keine Genauigkeitsschätzung für das gesamte Web.
 
 ## Entwicklung und Lizenz
 
-Node.js 24+ / pnpm 11.25.0: `pnpm install --frozen-lockfile`, `pnpm check`, `pnpm test`, `pnpm build`. Veröffentlichungspakete benötigen zusätzlich Git/Python 3.9+ sowie `pnpm release:prepare` und `pnpm release:verify`. ZIP-Nutzer benötigen keine Konten/API-Schlüssel/Entwicklungswerkzeuge. Prüfsummen stehen in `SHA256SUMS`.
+Node.js 24+ und pnpm 11.25.0:
 
-Originalcode und der in dieser Runde autorisierte Pro-Grafikableger: AGPL-3.0-only. Abhängigkeiten behalten ihre Lizenzen. Kein übernommener Code, Katalog, Erweiterungs-ID oder Git-Verlauf des Vorgängers. [Grafikherkunft](./assets/brand/README.md) · [Versionshinweise](./RELEASE_NOTES.md) · [LICENSE](./LICENSE).
+```powershell
+pnpm install --frozen-lockfile
+pnpm check
+pnpm test
+pnpm evaluate:release
+pnpm build
+```
+
+Pakete benötigen zusätzlich Git, Python 3.9+, `pnpm release:prepare` und `pnpm release:verify`. ZIPs mit `SHA256SUMS` und `Get-FileHash -Algorithm SHA256 <Dateiname>` vergleichen. Übereinstimmende Prüfsummen garantieren keine Sicherheit.
+
+Implementierung und Git-Verlauf sind unabhängig. Der autorisierte blaue Pro-Grafikableger des ursprünglichen NF/Pfeil-Motivs ist freigegeben. Originalcode und dieser Grafikableger stehen unter AGPL-3.0-only; Abhängigkeiten behalten ihre Lizenzen. [Grafikherkunft](./assets/brand/README.md) · [Abhängigkeiten](./DEPENDENCIES.md) · [LICENSE](./LICENSE) · [Versionshinweise](./RELEASE_NOTES.md) · [Mitwirken](./CONTRIBUTING.md).

@@ -18,3 +18,14 @@ Desktop.ini
 .DS_Store
 legal/private/
 namefirst-pro-backup-*.json
+namefirst-pro-recovery-*.json
+__pycache__/
+*.pyc
+*.tmp
+*.bak
+*.orig
+*.swp
+*.swo
+profiles/
+*-profile/
+*-profiles/

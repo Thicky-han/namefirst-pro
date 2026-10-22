@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync, mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { root, archive, run, sha } from './release-audit.mjs';
+import { root, archive, run, sha, filesUnder } from './release-audit.mjs';
 const pkg = JSON.parse(readFileSync(path.join(root, 'package.json'))); const directory = path.join(root, 'release', pkg.version);
 const metadata = JSON.parse(readFileSync(path.join(directory, 'release-metadata.json')));
 mkdirSync(path.join(root, '.cache'), { recursive: true }); const temp = mkdtempSync(path.join(root, '.cache/l6-source-rebuild-'));
@@ -13,6 +13,7 @@ const sourceRoot = path.join(destination, `${pkg.name}-${pkg.version}-source`);
 run(process.execPath, ['scripts/build.mjs', '--preview-brand'], { cwd: sourceRoot });
 const results = [];
 for (const target of ['chrome', 'edge']) {
+  assert.deepEqual(filesUnder(path.join(sourceRoot, 'dist', target)).sort(), metadata.runtimeFiles[target].map((item) => item.name).sort(), `Rebuilt ${target} file inventory differs`);
   for (const item of metadata.runtimeFiles[target]) assert.equal(sha(readFileSync(path.join(sourceRoot, 'dist', target, item.name))), item.sha256, `Rebuilt ${target}/${item.name} differs from the archive`);
   results.push({ target, matchedFiles: metadata.runtimeFiles[target].length });
 }

@@ -1,15 +1,15 @@
 # 安装、使用、备份与更新
 
-适用 `1.0.0-rc.1` 本地发行候选。界面目前为简体中文；九语 README 是说明语言，不是九语界面。正式 GitHub 仓库和下载链接将在维护者确认发布后建立，现在没有线上下载地址。
+适用首个正式版本 `1.0.0`。界面目前为简体中文；九语 README 是说明语言，不是九语界面。源码：[GitHub 仓库](https://github.com/Thicky-han/namefirst-pro)。从下方 Releases 页面获取成品；若还没有 `v1.0.0` 条目，说明仍在等待维护者最终发布确认。
 
 ## 安装成品，无需编译
 
-1. 在本地 `release/1.0.0-rc.1/` 取得与你浏览器对应的文件：Chrome 用 `namefirst-pro-1.0.0-rc.1-chrome.zip`；Edge 用 `namefirst-pro-1.0.0-rc.1-edge.zip`。`source.zip` 是供审阅/构建的对应源码，不是加载包。
+1. 打开 [GitHub Releases](https://github.com/Thicky-han/namefirst-pro/releases)，找到 `v1.0.0`，展开 Assets，下载与你浏览器对应的文件（维护者审阅本地包位于 `release/1.0.0/`）：Chrome 用 `namefirst-pro-1.0.0-chrome.zip`；Edge 用 `namefirst-pro-1.0.0-edge.zip`。`source.zip` 是供审阅/构建的对应源码，不是加载包。
 2. 将 ZIP **全部解压**到一个长期保留的文件夹。不要从压缩包中直接加载，也不要删掉已加载的文件夹。
 3. 在 Chrome 地址栏打开 `chrome://extensions`，或在 Edge 打开 `edge://extensions`。
 4. 打开“开发者模式”/“开发人员模式”，点击“加载已解压的扩展程序”。
-5. 选择直接包含 `manifest.json` 的解压目录；不要选择 ZIP 或它的上一级文件夹。加载后应显示 **NameFirst Pro — 双引擎预览**，候选版本 `1.0.0-rc.1`。
-6. 打开工具栏的扩展菜单，找到 NameFirst Pro；可自行固定。候选图标是原 NameFirst NF/上箭头的精修 PRO 提案，等待维护者定稿。
+5. 选择直接包含 `manifest.json` 的解压目录；不要选择 ZIP 或它的上一级文件夹。加载后应显示 **NameFirst Pro**，版本 `1.0.0`。
+6. 打开工具栏的扩展菜单，找到 NameFirst Pro；可自行固定。定稿图标为蓝色 NF/冰蓝箭头与淡金 PRO。
 
 ## 开启与首次搜索
 
@@ -20,7 +20,7 @@
 5. 教程、新闻等资料查询通常保留普通搜索；意图仍可能误判，不能将识别结果当作保证。可在卡片或弹窗用“这次查资料”纠正，或关闭功能。
 6. 同名时不按排名自动选择。HTTP 200、HTTPS、网页自称官方、个人偏好和模型分数均不能单独认证；核验也不等于软件安全或资质检测。
 
-支持 `www.bing.com`、`cn.bing.com`、`bing.com` 的 HTTPS `/search`，以及 `www.baidu.com/s` 的 UTF-8 `wd`/`word` 普通桌面布局。移动端、图片/新闻和验证页不在承诺范围。验证码、登录、限流、超时或不可识别布局会停止/降级，不会绕过。正常在线矩阵已按本轮要求不作为阶段门槛，具体能力范围以 [评估报告](./EVALUATION.md) 为准。
+支持 `www.bing.com`、`cn.bing.com`、`bing.com` 的 HTTPS `/search`，以及 `www.baidu.com/s` 的 UTF-8 `wd`/`word` 普通桌面布局。移动端、图片/新闻和验证页不在承诺范围。验证码、登录、限流、超时或不可识别布局会停止/降级，不会绕过。正常在线全矩阵尚未完成验收，受控测试、历史观察与具体能力范围见 [评估报告](./EVALUATION.md)。
 
 ## 个人记录和学习
 
@@ -49,4 +49,4 @@
 
 同目录 `SHA256SUMS` 给出每个成品和源码 ZIP 的 SHA-256。可用 `Get-FileHash -Algorithm SHA256 文件名` 比对，或由维护者运行 `pnpm release:verify`。哈希证明文件一致性，不是官方站点或安全认证。
 
-源码 ZIP 含完整原创实现、品牌提案、依赖锁、许可、构建/测试/打包脚本与公开评估数据，不含开发配置/凭据/个人备份。源码构建需 Node.js 24+ 和 pnpm 11.25.0：`pnpm install --frozen-lockfile`、`pnpm check`、`pnpm test`、`pnpm build`。发行打包另需 Python 3.9+ 与 Git；普通安装成品不需要这些工具、账号或 API Key。
+源码 ZIP 含完整原创实现、定稿品牌、依赖锁、许可、构建/测试/打包脚本与公开评估数据，不含开发配置/凭据/个人备份。源码构建需 Node.js 24+ 和 pnpm 11.25.0；先克隆仓库或解压源码 ZIP，进入直接含 `package.json` 的目录，再执行：`pnpm install --frozen-lockfile`、`pnpm check`、`pnpm test`、`pnpm build`。发行打包另需 Python 3.9+ 与 Git；普通安装成品不需要这些工具、账号或 API Key。

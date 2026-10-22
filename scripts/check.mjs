@@ -5,6 +5,7 @@ import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { scanText } from './release-audit.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const ignored = new Set(['.git', 'node_modules', 'dist', 'release', '.cache', 'test-results', 'playwright-report']);
@@ -29,8 +30,7 @@ for (const name of files) {
     continue;
   }
   const text = readFileSync(name, 'utf8');
-  assert(!/[A-Za-z]:[\\/]Users[\\/]|[A-Za-z]:[\\/]Github/u.test(text), `${relative}: absolute local path`);
-  assert(!/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,}/u.test(text), `${relative}: possible credential`);
+  scanText(text, relative);
   if (/\.(?:mjs|js)$/u.test(name)) {
     assert.match(text, /SPDX-License-Identifier: AGPL-3\.0-only/u, `${relative}: missing source license`);
     const result = spawnSync(process.execPath, ['--check', name], { encoding: 'utf8' });

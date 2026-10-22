@@ -1,10 +1,10 @@
-# NameFirst Pro 1.0.0-rc.1
+# NameFirst Pro 1.0.0
 
-2026-10-21。本地首版候选，等待图标和公开发布确认；不是已经上线的 GitHub Release。
+2026-10-21。首个正式版本的发行材料，蓝色主题已获维护者确认。独立公开仓库默认分支为 main；发布状态以 [Releases](https://github.com/Thicky-han/namefirst-pro/releases) 为准，首次公开发布须经维护者最终确认。
 
 ## 本版能力
 
-- 独立 AGPL-3.0-only 项目、全新插件身份与 Git 历史，非 fork。按维护者本轮要求，图标提案以 NameFirst 原创 NF/上箭头为基础精修，并增加 PRO；用户确认前仅在审阅构建中展示。
+- 独立 AGPL-3.0-only 项目、全新插件身份与 Git 历史，非 fork。按维护者本轮要求，蓝色图标以 NameFirst 原创 NF/上箭头为基础精修，并增加淡金 PRO，普通构建已应用。
 - Chrome/Edge × Bing/百度的普通桌面搜索适配、取消/重试、显式状态与来源卡片。不需要自建服务、注册或 API Key；联网权限可选、可撤销。
 - 未知名称进入本次发现，不依赖已装实体目录。Apache 官方项目来源可支持有限的主页/下载认证；Wikidata 为线索。其余主体、文档、登录可能保持未核验，不承诺全网认证。
 - 明确反馈更新本地有限特征模型，个人入口/别名/否定单独存储；界面提供关闭学习/询问、单步撤销，未点击不训练。
@@ -20,6 +20,6 @@
 
 ## 安装与分发
 
-参照 [中文安装说明](./INSTALL.md) 或 [English installation](./INSTALL.en.md)。审阅目录 `release/1.0.0-rc.1/` 将包含 Chrome/Edge ZIP、完整对应源码 ZIP、`release-metadata.json` 和 `SHA256SUMS`。图标候选仍待确认；公开仓库和可下载的发行链接在批准后建立，不放置未实际存在的链接。
+参照 [中文安装说明](./INSTALL.md) 或 [English installation](./INSTALL.en.md)。[项目仓库](https://github.com/Thicky-han/namefirst-pro) 默认分支为 main。审阅目录 `release/1.0.0/` 包含 Chrome/Edge ZIP、完整对应源码 ZIP、`release-metadata.json` 和 `SHA256SUMS`。从 [Releases](https://github.com/Thicky-han/namefirst-pro/releases) 的 v1.0.0 获取这些资产；若无该条目，说明仍在等待最终发布确认。发行前内容检查见 [检查报告](./PRE_RELEASE_REPORT.md)。
 
 代码采用 AGPL-3.0-only；品牌衍生来源见 [品牌记录](./assets/brand/README.md)，依赖和域名后缀数据各自保留原许可，见 [DEPENDENCIES.md](./DEPENDENCIES.md) 与包内声明。

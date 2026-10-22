@@ -1,6 +1,6 @@
-# NameFirst Pro 图标提案
+# NameFirst Pro 品牌图标
 
-状态：候选，待维护者确认；`config/branding.json` 的 approval 为 pending。普通构建不应用，`--preview-brand` 仅在本地审阅包中展示。确认后再将配置改为 approved 并重建。
+状态：维护者于 2026-10-21 明确选择“使用蓝色版本”，已定稿。`config/branding.json` 的 approval 为 approved；普通构建及正式包均使用本版图标。
 
 2026-10-21，维护者明确要求以 NameFirst 图标为基础稍作精修，彰显 Pro。这是本轮对早期“不复用图标”要求的明确变更；不改变独立源码、数据、插件身份及 Git 历史的要求。
 

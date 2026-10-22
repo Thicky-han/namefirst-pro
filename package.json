@@ -1,9 +1,12 @@
 {
   "name": "namefirst-pro",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0",
   "private": true,
   "description": "Independent, local-first browser extension for evidence-based official entry discovery.",
   "license": "AGPL-3.0-only",
+  "repository": { "type": "git", "url": "https://github.com/Thicky-han/namefirst-pro.git" },
+  "homepage": "https://github.com/Thicky-han/namefirst-pro#readme",
+  "bugs": { "url": "https://github.com/Thicky-han/namefirst-pro/issues" },
   "type": "module",
   "engines": {
     "node": ">=24"
@@ -27,6 +30,7 @@
     "evaluate:release": "node scripts/release-evaluate.mjs",
     "release:prepare": "node scripts/package-release.mjs",
     "release:verify": "node scripts/verify-release.mjs",
+    "release:audit": "node scripts/public-content-audit.mjs",
     "test:packaged-browser": "node scripts/packaged-browser-smoke.mjs",
     "release:rebuild-check": "node scripts/rebuild-release.mjs"
   },
