@@ -6,7 +6,7 @@
 
 [简体中文](./README.md) · [繁體中文](./README.zh-TW.md) · [English](./README.en.md) · [日本語](./README.ja.md) · [한국어](./README.ko.md) · [Français](./README.fr.md) · [Deutsch](./README.de.md) · [Español](./README.es.md) · [Português](./README.pt-BR.md)
 
-**1.0.0 is the first stable version being prepared for release.** Source: [Thicky-han/namefirst-pro](https://github.com/Thicky-han/namefirst-pro). Choose the packages below under `v1.0.0` on [Releases](https://github.com/Thicky-han/namefirst-pro/releases). **If that entry is absent, final maintainer publication confirmation is still pending.** Local review files are in `release/1.0.0/`. Ready-made packages need no Node, account, API key or project backend. The UI is Simplified Chinese; nine translated READMEs do not mean nine UI locales.
+**1.0.0 is the first stable release and is publicly available.** Source: [Thicky-han/namefirst-pro](https://github.com/Thicky-han/namefirst-pro). Choose the packages below under `v1.0.0` on [Releases](https://github.com/Thicky-han/namefirst-pro/releases). **If that entry is absent, final maintainer publication confirmation is still pending.** Local review files are in `release/1.0.0/`. Ready-made packages need no Node, account, API key or project backend. The UI is Simplified Chinese; nine translated READMEs do not mean nine UI locales.
 
 ## Install and use
 

@@ -1,6 +1,6 @@
 # NameFirst Pro 项目说明
 
-日期：2026-10-21，Asia/Shanghai。状态：阶段 0—5 已交付；L6 本地候选已交付；蓝色品牌已确认，现准备 `1.0.0` 正式包、公开仓库与 main，GitHub Release 待最终确认，见 [L6 报告](./STAGE6_REPORT.md)。管理/迁移实现见 [L5 报告](./STAGE5_REPORT.md)；学习见 [L4 报告](./STAGE4_REPORT.md)，双引擎受控矩阵见 [L3 报告](./STAGE3_REPORT.md)，Bing 现场历史见 [L2 报告](./STAGE2_REPORT.md)，核心见 [L1 报告](./STAGE1_REPORT.md)。按用户本轮要求，正常在线矩阵不再作为阶段门槛；不将未完成的测试改写为通过。完整产品行为仍包含后续交付目标。
+更新：2026-10-22，Asia/Shanghai。状态：阶段 0—5 已交付；L6 蓝色品牌及发行前检查已完成，用户最终确认后 `v1.0.0` 已在独立 public/main 仓库正式发布，见 [L6 报告](./STAGE6_REPORT.md)。管理/迁移实现见 [L5 报告](./STAGE5_REPORT.md)；学习见 [L4 报告](./STAGE4_REPORT.md)，双引擎受控矩阵见 [L3 报告](./STAGE3_REPORT.md)，Bing 现场历史见 [L2 报告](./STAGE2_REPORT.md)，核心见 [L1 报告](./STAGE1_REPORT.md)。按用户本轮要求，正常在线矩阵不再作为阶段门槛；不将未完成的测试改写为通过。完整产品行为仍包含后续交付目标。
 
 ## 1. 定位与本次决策
 
@@ -175,19 +175,19 @@ Bing 先打通，百度后适配。Google、Firefox、Safari、移动端不列�
 
 ## 14. 交付与发布
 
-此前 `1.0.0-rc.1` 的本地验收见 L6 报告。用户已明确选择蓝色版；`config/branding.json` 已 approved，普通构建应用深靛蓝/冰蓝/淡金 Pro 主题。现在重打包 `1.0.0`：双浏览器包、完整对应源码、SHA256SUMS 和版本/文件清单位于 `release/1.0.0/`。发行前审计及本轮实际验证见 [PRE_RELEASE_REPORT.md](./PRE_RELEASE_REPORT.md)，历史候选报告不改写为本轮结果。
+此前 `1.0.0-rc.1` 的本地验收见 L6 报告。用户已明确选择蓝色版；`config/branding.json` 已 approved，普通构建应用深靛蓝/冰蓝/淡金 Pro 主题。正式 `1.0.0` 已重打包并发布：双浏览器包、完整对应源码、SHA256SUMS 和版本/文件清单位于 `release/1.0.0/`。发行前审计及本轮实际验证见 [PRE_RELEASE_REPORT.md](./PRE_RELEASE_REPORT.md)，历史候选报告不改写为本轮结果。
 
 逐步安装说明包括下载哪个包、全部解压、选择直接包含 `manifest.json` 的目录、打开开发者模式、加载、开启核验权限、首次搜索和后续升级。主流语言文档按照原版九种语言规划，界面语言能力独立说明。
 
 发布前检查密码、Token、个人隐私、本地绝对路径、临时文件、测试配置、备份、生成垃圾与未授权材料；仅声明实际检查范围，不保证静态扫描发现所有秘密。
 
-最终 GitHub 仓库应为独立 public 仓库，默认 `main`，并验证 `fork: false` 和提交祖先。用户在 2026-10-21 本轮明确授权在审计后创建 public 仓库并推送 main；可准备含资产的草稿 Release。最终公开 GitHub Release 仍须在所有材料就绪后再次确认。核实仓库实际存在、可见性、默认分支与远端提交后提供链接；草稿资产不能描述为已公开下载。
+最终 GitHub 仓库应为独立 public 仓库，默认 `main`，并验证 `fork: false` 和提交祖先。用户在 2026-10-21 本轮明确授权在审计后创建 public 仓库并推送 main；可准备含资产的草稿 Release。用户于 2026-10-22 明确回复“发布”，已公开 [v1.0.0](https://github.com/Thicky-han/namefirst-pro/releases/tag/v1.0.0)，五项资产均通过未登录下载及 SHA-256 核对。核实仓库实际存在、可见性、默认分支与远端提交后提供链接；草稿资产不能描述为已公开下载。
 
 ## 15. 工作量与推进方式
 
 实时核验是新的核心系统，不能按“给目录加更多条目”的工作量估计。最大不确定项为可用的免费证据来源、来源自身信任、反爬限制、别名/同名识别和误认证防护。先证明这些，再扩大 UI 与分发。
 
-执行顺序和每阶段完成条件见 [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md)。阶段 0—5 已按当前边界交付，管理、备份和双向手动迁移见 [MANAGEMENT.md](./MANAGEMENT.md)。L6 品牌已定稿，正在完成首版发行前审计与公开仓库准备，最终 Release 等待用户确认；按用户要求移除正常在线矩阵门槛，既有在线观察继续据实可查。后续每轮围绕一个明确阶段推进，不把未实现功能标为完成。
+执行顺序和每阶段完成条件见 [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md)。阶段 0—5 已按当前边界交付，管理、备份和双向手动迁移见 [MANAGEMENT.md](./MANAGEMENT.md)。L6 品牌、首版审计和公开仓库已完成，首个正式 Release 已经用户确认并公开发布；按用户要求移除正常在线矩阵门槛，既有在线观察继续据实可查。后续每轮围绕一个明确阶段推进，不把未实现功能标为完成。
 
 ## 16. 技术依据
 

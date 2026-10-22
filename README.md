@@ -6,7 +6,7 @@
 
 [简体中文](./README.md) · [繁體中文](./README.zh-TW.md) · [English](./README.en.md) · [日本語](./README.ja.md) · [한국어](./README.ko.md) · [Français](./README.fr.md) · [Deutsch](./README.de.md) · [Español](./README.es.md) · [Português](./README.pt-BR.md)
 
-首个正式版本 **1.0.0** 已进入发行前准备，蓝色主题已定稿。源码仓库：[Thicky-han/namefirst-pro](https://github.com/Thicky-han/namefirst-pro)。从 [Releases](https://github.com/Thicky-han/namefirst-pro/releases) 的 `v1.0.0` 选择下列成品；**若尚无该条目，表示仍待维护者最终发布确认。** 本地审阅包在 `release/1.0.0/`。普通安装不需要 Node、账号、API Key 或项目服务器。界面目前简体中文；九语 README 不等于九语界面。
+首个正式版本 **1.0.0** 已正式发布，蓝色主题已定稿。源码仓库：[Thicky-han/namefirst-pro](https://github.com/Thicky-han/namefirst-pro)。从 [Releases](https://github.com/Thicky-han/namefirst-pro/releases) 的 `v1.0.0` 选择下列成品；**若尚无该条目，表示仍待维护者最终发布确认。** 本地审阅包在 `release/1.0.0/`。普通安装不需要 Node、账号、API Key 或项目服务器。界面目前简体中文；九语 README 不等于九语界面。
 
 ## 安装和使用
 

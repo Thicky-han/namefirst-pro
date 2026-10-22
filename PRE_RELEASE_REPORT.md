@@ -58,3 +58,12 @@
 已创建并核实 [Thicky-han/namefirst-pro](https://github.com/Thicky-han/namefirst-pro)：visibility PUBLIC、fork false、默认 main、AGPL 许可识别成功；main 已推送并核对远端提交。未登录访问仓库网页与英文 README 均返回 200 且内容符合；匿名 API 曾受共享出口限额影响，未将此当作私有仓库或伪报 API 通过。最终源码提交以发行元数据为准，后续审计报告和界面定稿提交也须推送并复核。
 
 公开 GitHub Release 仍待维护者最后确认；本轮资产可准备为草稿，草稿资产不能称为公开下载。确认后发布，再核查未登录资产下载及 SHA-256。
+
+
+## 正式发布验证（2026-10-22）
+
+用户最终确认“发布”后，已将 [NameFirst Pro v1.0.0](https://github.com/Thicky-han/namefirst-pro/releases/tag/v1.0.0) 从草稿公开为首个正式版本。发行标签和五项资产对应源码提交 `0d4bd9b238443cf2a3b98256f9673fda7ec23928`；后续 main 文档提交补记本次发布事实。
+
+通过不携带 GitHub Authorization/Cookie 的请求下载 Chrome、Edge、完整源码 ZIP、release-metadata.json 和 SHA256SUMS，五项全部返回 200。逐项 SHA-256 与维护者确认的本地资产一致，公开 SHA256SUMS 的全部条目也重新核对通过。两浏览器 ZIP 各 399767 字节、源码 ZIP 1871134 字节。
+
+release-metadata.json 是打包时快照，preparedAt/publication 记录生成资产时的状态；GitHub 的 publishedAt 和公开 Release 页面记录本次发布状态。已确认资产保持发布时校验值。
